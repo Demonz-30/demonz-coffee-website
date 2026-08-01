@@ -5,6 +5,9 @@
 # KALAU BUKA CHAT BARU & INGIN ALL LANGSUNG NYAMBUNG, KATAKAN:
 #     "all, baca konteks"
 # (All akan membaca file ini dan langsung paham semua konteks.)
+#
+# NOTE: Memory utama (berlaku untuk SEMUA proyek) ada di:
+#   C:/Users/USER/Documents/ALL_MEMORY.md
 # ============================================================
 
 ## 1. IDENTITAS PIHAK

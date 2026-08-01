@@ -7,31 +7,68 @@
 
   const isTouch = window.matchMedia('(hover: none)').matches;
 
-  /* ================= LOADING SCREEN ================= */
+  /* ================= LOADING SCREEN (premium progress + fade) ================= */
   window.addEventListener('load', function () {
     const loader = document.getElementById('loader');
+    const loaderCount = document.getElementById('loaderCount');
+    const mainEl = document.querySelector('main');
     if (!loader) return;
     document.body.style.overflow = 'hidden';
+    const reduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    // quick lightweight progress read-out synced to the CSS bar (~1.8s)
+    const dur = 1800;
+    const t0 = performance.now();
+    (function tick() {
+      const p = Math.min(100, Math.round(((performance.now() - t0) / dur) * 100));
+      if (loaderCount) loaderCount.textContent = p + '%';
+      if (p < 100) requestAnimationFrame(tick);
+    })();
+    // reveal main content the moment the loader fades (no dead/blank gap)
+    if (mainEl) mainEl.classList.add('is-visible');
     setTimeout(function () {
       loader.classList.add('hidden');
       document.body.style.overflow = '';
-    }, 1800);
+    }, reduced ? 400 : 1800);
   });
 
-  /* ================= NAVBAR SCROLL ================= */
+  /* ================= NAVBAR SCROLL + HIDE/SHOW + PROGRESS BAR ================= */
   const navbar = document.getElementById('siteNav');
   const backTop = document.getElementById('backTop');
+  const progressBar = document.getElementById('scrollProgress');
+  const progressSpan = progressBar ? progressBar.querySelector('span') : null;
+  let lastScrollY = window.scrollY;
   const onScrollNav = function () {
     const sc = window.scrollY;
+    const doc = document.documentElement;
+    const max = doc.scrollHeight - doc.clientHeight;
+
     if (navbar) {
       if (sc > 60) navbar.classList.add('scrolled'); else navbar.classList.remove('scrolled');
+      // hide navbar when scrolling down past the hero, show again when scrolling up
+      if (sc > 200 && sc > lastScrollY) navbar.classList.add('nav-hidden');
+      else navbar.classList.remove('nav-hidden');
     }
     if (backTop) {
       if (sc > 400) backTop.classList.add('show'); else backTop.classList.remove('show');
     }
+    // scroll progress bar (debounced width write is cheap; passive rAF would be ideal)
+    if (progressSpan && max > 0) {
+      progressSpan.style.width = ((sc / max) * 100) + '%';
+    }
+    lastScrollY = sc;
     highlightNav();
   };
-  window.addEventListener('scroll', onScrollNav, { passive: true });
+  // lightweight scroll handler (passive) + a rAF throttle to avoid excessive layout writes
+  let scrollTicking = false;
+  window.addEventListener('scroll', function () {
+    if (!scrollTicking) {
+      scrollTicking = true;
+      requestAnimationFrame(function () {
+        onScrollNav();
+        scrollTicking = false;
+      });
+    }
+  }, { passive: true });
   onScrollNav();
 
   /* ================= ACTIVE NAV LINK ================= */
@@ -143,6 +180,51 @@
         opacity: 0, y: 50, rotateY: 8, duration: 1.1, ease: 'power3.out',
         scrollTrigger: { trigger: el, start: 'top 85%' }
       });
+    });
+
+    // Staggered product-card entrance (premium, within each product grid)
+    document.querySelectorAll('.product-grid').forEach(function (grid) {
+      const cards = grid.querySelectorAll('.product-card');
+      if (cards.length) {
+        gsap.from(cards, {
+          opacity: 0, y: 40, duration: 0.8, stagger: 0.09, ease: 'power3.out',
+          scrollTrigger: { trigger: grid, start: 'top 82%' }
+        });
+      }
+    });
+
+    // Animated number counters (scroll-triggered). Runs regardless of GSAP too.
+    runCounters();
+  }
+
+  function runCounters() {
+    const els = document.querySelectorAll('[data-count]');
+    if (!els.length) return;
+    const reduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const render = function (el, val) {
+      const decimals = parseInt(el.getAttribute('data-decimals') || '0', 10);
+      const prefix = el.getAttribute('data-prefix') || '';
+      const suffix = el.getAttribute('data-suffix') || '';
+      el.textContent = prefix + val.toFixed(decimals) + suffix;
+    };
+    els.forEach(function (el) {
+      const target = parseFloat(el.getAttribute('data-count'));
+      if (reduced || isNaN(target)) { render(el, target); return; }
+      const io = new IntersectionObserver(function (entries) {
+        entries.forEach(function (entry) {
+          if (!entry.isIntersecting) return;
+          io.unobserve(entry.target);
+          const start = performance.now();
+          const dur = 1500;
+          (function step() {
+            const t = Math.min(1, (performance.now() - start) / dur);
+            const ease = 1 - Math.pow(1 - t, 3); // easeOutCubic
+            render(el, target * ease);
+            if (t < 1) requestAnimationFrame(step);
+          })();
+        });
+      }, { threshold: 0.5 });
+      io.observe(el);
     });
   }
 

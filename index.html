@@ -4,44 +4,56 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Demonz Coffee — Premium Robusta Lampung | Cita Rasa Khas Indonesia</title>
-
-  <!-- ================= SEO ================= -->
   <meta name="description" content="Demonz Coffee menghadirkan kopi Robusta Lampung premium dengan cita rasa autentik khas Indonesia. Natural Process, Medium Roast. Pesan via Shopee & WhatsApp. Pengiriman cepat & packing premium." />
   <meta name="keywords" content="Demonz Coffee, kopi Lampung, robusta lampung, kopi premium, kopi asli indonesia, natural process, medium roast, kopi robusta, kopi lokal indonesia" />
   <meta name="author" content="Demonz Coffee" />
   <meta name="robots" content="index, follow" />
   <meta name="theme-color" content="#0B0B0B" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="Demonz Coffee" />
+  <meta name="application-name" content="Demonz Coffee" />
+
+  <!-- Canonical -->
   <link rel="canonical" href="https://demonzcoffee.id/" />
 
-  <!-- Open Graph -->
+  <!-- ======= SEO Open Graph (absolute URLs) ======= -->
   <meta property="og:type" content="website" />
   <meta property="og:site_name" content="Demonz Coffee" />
+  <meta property="og:locale" content="id_ID" />
   <meta property="og:title" content="Demonz Coffee — POWER IN EVERY SIP | Premium Robusta Lampung" />
   <meta property="og:description" content="Kopi Robusta Lampung berkualitas premium yang menghadirkan cita rasa autentik dalam setiap tegukan." />
-  <meta property="og:image" content="assets/logo/web/logo2.webp" />
+  <meta property="og:image" content="https://demonzcoffee.id/assets/logo/web/logo2.webp" />
+  <meta property="og:image:width" content="600" />
+  <meta property="og:image:height" content="600" />
+  <meta property="og:image:alt" content="Logo Demonz Coffee" />
   <meta property="og:url" content="https://demonzcoffee.id/" />
-  <meta property="og:locale" content="id_ID" />
 
-  <!-- Twitter -->
+  <!-- ======= Twitter Card ======= -->
   <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:site" content="@demonzcoffe.id" />
+  <meta name="twitter:creator" content="@demonzcoffe.id" />
   <meta name="twitter:title" content="Demonz Coffee — POWER IN EVERY SIP" />
   <meta name="twitter:description" content="Premium Robusta Lampung dengan cita rasa autentik khas Indonesia." />
-  <meta name="twitter:image" content="assets/logo/web/logo2.webp" />
+  <meta name="twitter:image" content="https://demonzcoffee.id/assets/logo/web/logo2.webp" />
 
-  <!-- Schema.org -->
+  <!-- ======= Schema.org — Coffee Business + Organization + WebSite ======= -->
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
     "@type": "CoffeeShop",
+    "@id": "https://demonzcoffee.id/#business",
     "name": "Demonz Coffee",
     "description": "Brand kopi premium Robusta Lampung dengan cita rasa autentik khas Indonesia. Natural Process, Medium Roast.",
     "url": "https://demonzcoffee.id/",
-    "logo": "assets/logo/web/logo2.webp",
-    "image": "assets/logo/web/logo2.webp",
-    "address": { "@type": "PostalAddress", "addressLocality": "Lampung", "addressCountry": "ID" },
+    "logo": "https://demonzcoffee.id/assets/logo/web/logo2.webp",
+    "image": "https://demonzcoffee.id/assets/logo/web/products3.webp",
+    "address": { "@type": "PostalAddress", "addressLocality": "Lampung", "addressRegion": "Lampung", "addressCountry": "ID" },
     "telephone": "+6285129821771",
     "openingHours": "Mo-Su 08:00-21:00",
     "priceRange": "Rp25.000",
+    "servesCuisine": "Kopi / Coffee",
     "sameAs": [
       "https://instagram.com/demonzcoffe.id",
       "https://www.tiktok.com/@demonzcoffe.id",
@@ -50,21 +62,46 @@
     "founder": { "@type": "Person", "name": "Muhammad Munir Alfaruq", "jobTitle": "Founder Demonz Coffee" }
   }
   </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "name": "Demonz Coffee",
+    "url": "https://demonzcoffee.id/",
+    "potentialAction": {
+      "@type": "SearchAction",
+      "target": "https://demonzcoffee.id/#produk",
+      "query-input": "required name=search_term_string"
+    }
+  }
+  </script>
 
-  <!-- Favicon -->
-  <link rel="icon" type="image/webp" href="assets/logo/web/logo3.webp" />
+  <!-- ======= Favicon & App Icons ======= -->
+  <link rel="icon" type="image/png" sizes="32x32" href="assets/icon/favicon-32x32.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="assets/icon/apple-touch-icon.png" />
+  <link rel="icon" type="image/svg+xml" href="assets/logo/web/logo3.webp" />
 
-  <!-- Fonts -->
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,600&family=Poppins:wght@300;400;500;600;700&family=Montserrat:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <!-- PWA Manifest -->
+  <link rel="manifest" href="manifest.json" />
 
-  <!-- CSS -->
-  <link rel="stylesheet" href="https://unpkg.com/swiper@11/swiper-bundle.min.css" />
-  <link rel="stylesheet" href="css/style.css" />
+  <!-- ======= Self-hosted Fonts (preload critical latin) ======= -->
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="assets/fonts/playfairdisplay-800.woff2" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="assets/fonts/montserrat-400.woff2" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="assets/fonts/poppins-400.woff2" />
+
+  <!-- ======= Preload LCP image (hero product) ======= -->
+  <link rel="preload" as="image" fetchpriority="high" href="assets/products/web/products2.webp" />
+
+  <!-- CSS (self-hosted, render-blocking, small) -->
+  <link rel="stylesheet" href="vendor/css/swiper-bundle.min.css" />
+  <link rel="stylesheet" href="css/fonts.css" />
+  <link rel="stylesheet" href="css/style.min.css" />
 </head>
 
 <body class="bg-[#0B0B0B] text-white font-body overflow-x-hidden antialiased">
+
+  <!-- Scroll progress bar (top) -->
+  <div class="scroll-progress" id="scrollProgress" aria-hidden="true"><span></span></div>
 
   <!-- ============ LOADING SCREEN ============ -->
   <div id="loader" class="loader-screen" role="status" aria-label="Memuat">
@@ -73,6 +110,7 @@
     </div>
     <div class="loader-text">DEMONZ <span>COFFEE</span></div>
     <div class="loader-bar"><span></span></div>
+    <div class="loader-count" id="loaderCount" aria-hidden="true">0%</div>
   </div>
 
   <!-- ============ CURSOR (desktop only) ============ -->
@@ -121,7 +159,7 @@
     <section id="home" class="hero section">
       <!-- Cinematic background (parallax) -->
       <div class="hero-bg" id="heroBg" aria-hidden="true">
-        <img src="assets/products/web/products3.webp" alt="" class="hero-bg-img" fetchpriority="high" />
+        <img src="assets/products/web/products3.webp" alt="" class="hero-bg-img" width="900" height="506" fetchpriority="high" />
         <div class="hero-overlay"></div>
       </div>
 
@@ -151,12 +189,12 @@
           <div class="hero-stats glass" data-reveal>
             <div class="hs-item">
               <span class="hs-ico"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2 4 6v6c0 5 3.5 8 8 10 4.5-2 8-5 8-10V6Z"/><circle cx="12" cy="11" r="3"/></svg></span>
-              <span class="hs-body"><b>100%</b><small>Robusta Asli</small></span>
+              <span class="hs-body"><b data-count="100" data-suffix="%">100%</b><small>Robusta Asli</small></span>
             </div>
             <span class="hs-sep"></span>
             <div class="hs-item">
               <span class="hs-ico"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 5h18M4 5h16v10a4 4 0 0 1-4 4H8a4 4 0 0 1-4-4Z"/><path d="M3 5v14M3 12h18M12 5v14"/></svg></span>
-              <span class="hs-body"><b>±250g</b><small>Netto Premium</small></span>
+              <span class="hs-body"><b data-count="250" data-prefix="±">±250g</b><small>Netto Premium</small></span>
             </div>
             <span class="hs-sep"></span>
             <div class="hs-item">
@@ -166,7 +204,7 @@
             <span class="hs-sep"></span>
             <div class="hs-item">
               <span class="hs-ico"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 17.5c3.5-2 6-3.5 6-7A6 6 0 1 0 6 10.5c0 3.5 2.5 5 6 7Z"/><path d="M12 6a4.5 4.5 0 0 0-1 8.9"/></svg></span>
-              <span class="hs-body"><b>4.9</b><small>Rating Pelanggan</small></span>
+              <span class="hs-body"><b data-count="4.9" data-decimals="1">4.9</b><small>Rating Pelanggan</small></span>
             </div>
           </div>
 
@@ -186,13 +224,16 @@
           <!-- WebGL mount slot (reserved for Three.js next milestone) -->
           <canvas id="hero-canvas" class="hero-canvas" aria-hidden="true" tabindex="-1"></canvas>
 
+          <!-- Loading veil (no layout shift: absolutely positioned, removed after first render) -->
+          <div class="hero-loader" id="heroLoader" aria-hidden="true"><i></i></div>
+
           <!-- Premium floating PNG product showcase -->
           <div class="fallback-product" id="fallbackProduct" aria-hidden="false">
             <div class="premium-product" data-parallax="product">
               <div class="pp-orbit"><i></i><i></i></div>
               <div class="pp-ring"></div>
               <div class="pp-aura"></div>
-              <img src="assets/products/web/products2.webp" alt="Kopi Robusta Lampung premium" class="pp-img" loading="eager" fetchpriority="high" />
+              <img src="assets/products/web/products2.webp" alt="Kopi Robusta Lampung premium" class="pp-img" width="599" height="900" loading="eager" fetchpriority="high" />
               <div class="pp-reflection"></div>
             </div>
             <div class="pp-glow"></div>
@@ -227,7 +268,7 @@
           <!-- Owner photo -->
           <div class="owner-visual" data-tilt-reveal>
             <div class="owner-frame">
-              <img src="assets/owner/web/owner1.webp" alt="Muhammad Munir Alfaruq — Founder Demonz Coffee" loading="lazy" />
+              <img src="assets/owner/web/owner1.webp" alt="Muhammad Munir Alfaruq — Founder Demonz Coffee" width="525" height="700" loading="lazy" />
               <div class="owner-shine"></div>
             </div>
             <div class="owner-card">
@@ -313,7 +354,7 @@
           <!-- Card 1 -->
           <article class="product-card glass" data-tilt data-name="Robusta Lampung" data-cat="produk">
             <div class="pc-media">
-              <img src="assets/products/web/products2.webp" alt="Robusta Lampung — Natural Process, Medium Roast" loading="lazy" />
+              <img src="assets/products/web/products2.webp" alt="Robusta Lampung — Natural Process, Medium Roast" width="599" height="900" loading="lazy" />
               <span class="pc-badge">Best Seller</span>
               <button type="button" class="pc-zoom" data-lightbox="assets/products/web/products2.webp" aria-label="Perbesar gambar">
                 <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/><path d="M11 8v6M8 11h6"/></svg>
@@ -344,7 +385,7 @@
           <!-- Card 2 -->
           <article class="product-card glass" data-tilt data-name="Signature Pack" data-cat="packaging">
             <div class="pc-media">
-              <img src="assets/products/web/products8.webp" alt="Signature Pack — packing premium Demonz Coffee" loading="lazy" />
+              <img src="assets/products/web/products8.webp" alt="Signature Pack — packing premium Demonz Coffee" width="675" height="900" loading="lazy" />
               <span class="pc-badge">Premium Pack</span>
               <button type="button" class="pc-zoom" data-lightbox="assets/products/web/products8.webp" aria-label="Perbesar gambar">
                 <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/><path d="M11 8v6M8 11h6"/></svg>
@@ -375,7 +416,7 @@
           <!-- Card 3 -->
           <article class="product-card glass" data-tilt data-name="Natural Beans" data-cat="beans">
             <div class="pc-media">
-              <img src="assets/products/web/products5.webp" alt="Natural Beans — biji Robusta Lampung asli" loading="lazy" />
+              <img src="assets/products/web/products5.webp" alt="Natural Beans — biji Robusta Lampung asli" width="675" height="900" loading="lazy" />
               <span class="pc-badge">100% Robusta</span>
               <button type="button" class="pc-zoom" data-lightbox="assets/products/web/products5.webp" aria-label="Perbesar gambar">
                 <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/><path d="M11 8v6M8 11h6"/></svg>
@@ -448,7 +489,7 @@
                 <div class="stars stars-lg" data-score="5"></div>
                 <blockquote>"Saya sudah mencoba berbagai kopi lokal, tetapi Demonz Coffee memiliki aroma dan rasa yang benar-benar berbeda."</blockquote>
                 <figcaption class="t-author">
-                  <img src="assets/products/web/products1.webp" alt="Foto Andi R" class="t-avatar" loading="lazy" />
+                  <img src="assets/products/web/products1.webp" alt="Foto Andi R" class="t-avatar" width="58" height="58" loading="lazy" />
                   <span class="t-meta"><b>Andi R</b><br /><small>Pecinta Kopi — Jakarta</small></span>
                 </figcaption>
               </figure>
@@ -462,7 +503,7 @@
                 <div class="stars stars-lg" data-score="5"></div>
                 <blockquote>"Sangat cocok diminum pagi maupun malam. Pengiriman cepat dan kualitas produk sangat baik."</blockquote>
                 <figcaption class="t-author">
-                  <img src="assets/products/web/products4.webp" alt="Foto Siti" class="t-avatar" loading="lazy" />
+                  <img src="assets/products/web/products4.webp" alt="Foto Siti" class="t-avatar" width="58" height="58" loading="lazy" />
                   <span class="t-meta"><b>Siti N</b><br /><small>Home Brewer — Bandar Lampung</small></span>
                 </figcaption>
               </figure>
@@ -476,7 +517,7 @@
                 <div class="stars stars-lg" data-score="5"></div>
                 <blockquote>"Packaging rapi, aroma khas Robusta Lampung sangat terasa. Akan membeli lagi."</blockquote>
                 <figcaption class="t-author">
-                  <img src="assets/products/web/products7.webp" alt="Foto Rizky" class="t-avatar" loading="lazy" />
+                  <img src="assets/products/web/products7.webp" alt="Foto Rizky" class="t-avatar" width="58" height="58" loading="lazy" />
                   <span class="t-meta"><b>Rizky M</b><br /><small>Kafe Owner — Indonesia</small></span>
                 </figcaption>
               </figure>
@@ -560,7 +601,7 @@
       <!-- CTA Banner -->
       <div class="cta-zone" data-reveal>
         <div class="cta-bg" aria-hidden="true">
-          <img src="assets/products/web/products4.webp" alt="" loading="lazy" />
+          <img src="assets/products/web/products4.webp" alt="" width="506" height="900" loading="lazy" />
         </div>
         <div class="cta-overlay"></div>
         <div class="cta-smoke" aria-hidden="true"><i></i><i></i><i></i></div>
@@ -688,24 +729,44 @@
     <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m18 15-6-6-6 6"/></svg>
   </button>
 
-  <!-- SCRIPTS -->
+  <!-- ===== Default script disabled on reduced-motion to cut main-thread work ===== -->
+  <script>
+    document.documentElement.classList.toggle(
+      'reduce-anim',
+      window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    );
+  </script>
+
+  <!-- ===== Self-hosted vendor libraries (no CDN dependency) ===== -->
   <!-- GSAP + ScrollTrigger -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
-  <!-- Three.js (r128) + OrbitControls -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-  <script src="https://unpkg.com/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+  <script defer src="vendor/js/gsap.min.js"></script>
+  <script defer src="vendor/js/ScrollTrigger.min.js"></script>
+  <!-- Three.js (r128) + OrbitControls + GLTFLoader -->
+  <script defer src="vendor/js/three.min.js"></script>
+  <script defer src="vendor/js/OrbitControls.js"></script>
+  <script defer src="vendor/js/GLTFLoader.js"></script>
   <!-- Lenis Smooth Scroll -->
-  <script src="https://unpkg.com/lenis@1.1.14/dist/lenis.min.js"></script>
+  <script defer src="vendor/js/lenis.min.js"></script>
   <!-- Swiper (testimonials) -->
-  <script src="https://unpkg.com/swiper@11/swiper-bundle.min.js"></script>
+  <script defer src="vendor/js/swiper-bundle.min.js"></script>
   <!-- Vanilla Tilt (product cards) -->
-  <script src="https://unpkg.com/vanilla-tilt@1.8.1/dist/vanilla-tilt.min.js"></script>
+  <script defer src="vendor/js/vanilla-tilt.min.js"></script>
   <!-- Typed.js (hero sub typing) -->
-  <script src="https://unpkg.com/typed.js@2.1.0/dist/typed.umd.js"></script>
-  <!-- Three.js Hero (PNG product used as auto-fallback; NOT blank if GLB missing) -->
-  <script src="js/three-hero.js"></script>
-  <script src="js/main.js"></script>
-  <script src="js/app.js"></script>
+  <script defer src="vendor/js/typed.umd.js"></script>
+  <!-- App scripts (minified production) -->
+  <script defer src="js/three-hero.min.js"></script>
+  <script defer src="js/main.min.js"></script>
+  <script defer src="js/app.min.js"></script>
+
+  <!-- ===== PWA: register Service Worker ===== -->
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', function () {
+        navigator.serviceWorker.register('sw.js')
+          .then(function (reg) { console.log('[PWA] SW registered:', reg.scope); })
+          .catch(function (err) { console.warn('[PWA] SW registration failed:', err); });
+      });
+    }
+  </script>
 </body>
 </html>

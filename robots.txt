@@ -1,11 +1,13 @@
 # Demonz Coffee — robots.txt
-# Allow all crawlers
 User-agent: *
 Allow: /
 
-# Block nothing important
+# Prevent crawlers from wasting crawl budget on internal resources
+Disallow: /vendor/
 Disallow: /css/
 Disallow: /js/
+Disallow: /assets/icon/
+Disallow: /sw.js
 
-# Sitemap location
+# Human-readable sitemap for crawlers
 Sitemap: https://demonzcoffee.id/sitemap.xml

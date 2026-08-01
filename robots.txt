@@ -1,0 +1,11 @@
+# Demonz Coffee — robots.txt
+# Allow all crawlers
+User-agent: *
+Allow: /
+
+# Block nothing important
+Disallow: /css/
+Disallow: /js/
+
+# Sitemap location
+Sitemap: https://demonzcoffee.id/sitemap.xml

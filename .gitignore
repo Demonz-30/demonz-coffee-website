@@ -1,0 +1,40 @@
+# ============================================================
+# DEMONZ COFFEE — Git Ignore
+# Static HTML/CSS/JS site. Tracks source + assets only.
+# ============================================================
+
+# ---- Operating System ----
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ---- Editor / IDE ----
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# ---- Logs & temp ----
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+*.tmp
+*.temp
+
+# ---- Build / tooling artifacts (not used here, but safe) ----
+node_modules/
+dist/
+build/
+out/
+coverage/
+.parcel-cache/
+.vite/
+.env
+.env.local
+.env.*.local

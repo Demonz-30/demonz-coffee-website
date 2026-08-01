@@ -1,0 +1,692 @@
+<!DOCTYPE html>
+<html lang="id" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Demonz Coffee — Premium Robusta Lampung | Cita Rasa Khas Indonesia</title>
+
+  <!-- ================= SEO ================= -->
+  <meta name="description" content="Demonz Coffee menghadirkan kopi Robusta Lampung premium dengan cita rasa autentik khas Indonesia. Natural Process, Medium Roast. Pesan via Shopee & WhatsApp. Pengiriman cepat & packing premium." />
+  <meta name="keywords" content="Demonz Coffee, kopi Lampung, robusta lampung, kopi premium, kopi asli indonesia, natural process, medium roast, kopi robusta, kopi lokal indonesia" />
+  <meta name="author" content="Demonz Coffee" />
+  <meta name="robots" content="index, follow" />
+  <meta name="theme-color" content="#0B0B0B" />
+  <link rel="canonical" href="https://demonzcoffee.id/" />
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="Demonz Coffee" />
+  <meta property="og:title" content="Demonz Coffee — POWER IN EVERY SIP | Premium Robusta Lampung" />
+  <meta property="og:description" content="Kopi Robusta Lampung berkualitas premium yang menghadirkan cita rasa autentik dalam setiap tegukan." />
+  <meta property="og:image" content="assets/logo/web/logo2.webp" />
+  <meta property="og:url" content="https://demonzcoffee.id/" />
+  <meta property="og:locale" content="id_ID" />
+
+  <!-- Twitter -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Demonz Coffee — POWER IN EVERY SIP" />
+  <meta name="twitter:description" content="Premium Robusta Lampung dengan cita rasa autentik khas Indonesia." />
+  <meta name="twitter:image" content="assets/logo/web/logo2.webp" />
+
+  <!-- Schema.org -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "CoffeeShop",
+    "name": "Demonz Coffee",
+    "description": "Brand kopi premium Robusta Lampung dengan cita rasa autentik khas Indonesia. Natural Process, Medium Roast.",
+    "url": "https://demonzcoffee.id/",
+    "logo": "assets/logo/web/logo2.webp",
+    "image": "assets/logo/web/logo2.webp",
+    "address": { "@type": "PostalAddress", "addressLocality": "Lampung", "addressCountry": "ID" },
+    "telephone": "+6285129821771",
+    "openingHours": "Mo-Su 08:00-21:00",
+    "priceRange": "Rp25.000",
+    "sameAs": [
+      "https://instagram.com/demonzcoffe.id",
+      "https://www.tiktok.com/@demonzcoffe.id",
+      "https://s.shopee.co.id/50XueICfLA"
+    ],
+    "founder": { "@type": "Person", "name": "Muhammad Munir Alfaruq", "jobTitle": "Founder Demonz Coffee" }
+  }
+  </script>
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/webp" href="assets/logo/web/logo3.webp" />
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,600&family=Poppins:wght@300;400;500;600;700&family=Montserrat:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+
+  <!-- CSS -->
+  <link rel="stylesheet" href="https://unpkg.com/swiper@11/swiper-bundle.min.css" />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+
+<body class="bg-[#0B0B0B] text-white font-body overflow-x-hidden antialiased">
+
+  <!-- ============ LOADING SCREEN ============ -->
+  <div id="loader" class="loader-screen" role="status" aria-label="Memuat">
+    <div class="loader-logo">
+      <img src="assets/logo/web/logo2.webp" alt="Demonz Coffee" width="96" height="96" />
+    </div>
+    <div class="loader-text">DEMONZ <span>COFFEE</span></div>
+    <div class="loader-bar"><span></span></div>
+  </div>
+
+  <!-- ============ CURSOR (desktop only) ============ -->
+  <div class="cursor-dot" id="cursorDot" aria-hidden="true"></div>
+  <div class="cursor-ring" id="cursorRing" aria-hidden="true"></div>
+
+  <!-- ============ NAVBAR ============ -->
+  <header id="siteNav" class="site-nav">
+    <nav class="nav-inner">
+      <a href="#home" class="brand" aria-label="Demonz Coffee - Beranda">
+        <img src="assets/logo/web/logo2.webp" alt="Logo Demonz Coffee" width="44" height="44" loading="eager" />
+        <span class="brand-name">DEMONZ <em>Coffee</em></span>
+      </a>
+
+      <ul class="nav-links" id="navLinks">
+        <li><a href="#home" class="nav-link is-active">Home</a></li>
+        <li><a href="#about" class="nav-link">Tentang</a></li>
+        <li><a href="#produk" class="nav-link">Produk</a></li>
+        <li><a href="#galeri" class="nav-link">Galeri</a></li>
+        <li><a href="#testimoni" class="nav-link">Testimoni</a></li>
+        <li><a href="#kontak" class="nav-link">Kontak</a></li>
+      </ul>
+
+      <div class="nav-actions">
+        <button type="button" class="btn-primary nav-cta" data-magnetic data-order>Pesan Sekarang</button>
+        <button type="button" class="hamburger" id="hamburger" aria-label="Buka menu" aria-expanded="false">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </nav>
+
+    <!-- Mobile menu -->
+    <div class="mobile-menu" id="mobileMenu" aria-hidden="true">
+      <a href="#home">Home</a>
+      <a href="#about">Tentang</a>
+      <a href="#produk">Produk</a>
+      <a href="#galeri">Galeri</a>
+      <a href="#testimoni">Testimoni</a>
+      <a href="#kontak">Kontak</a>
+      <button type="button" class="btn-primary" data-order>Pesan Sekarang</button>
+    </div>
+  </header>
+<!--@@HERO@@-->
+  <main>
+    <!-- ============ PAGE 1: HERO ============ -->
+    <section id="home" class="hero section">
+      <!-- Cinematic background (parallax) -->
+      <div class="hero-bg" id="heroBg" aria-hidden="true">
+        <img src="assets/products/web/products3.webp" alt="" class="hero-bg-img" fetchpriority="high" />
+        <div class="hero-overlay"></div>
+      </div>
+
+      <!-- Falling dust / embers (CSS) -->
+      <div class="embr" aria-hidden="true" id="embrLayer">
+        <i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i>
+      </div>
+
+      <!-- Steam wisps (CSS) -->
+      <div class="hero-steam" aria-hidden="true"><i></i><i></i><i></i></div>
+
+      <div class="hero-layout">
+        <!-- LEFT: headline -->
+        <div class="hero-copy">
+          <p class="hero-kicker"><span class="kicker-line"></span> 100% Robusta Lampung</p>
+          <h1 class="hero-title">
+            <span class="hero-line">POWER IN</span>
+            <span class="hero-line gold">EVERY <em>SIP</em></span>
+          </h1>
+          <p class="hero-sub">Kopi Robusta Lampung berkualitas premium yang menghadirkan cita rasa autentik dalam setiap tegukan.</p>
+          <div class="hero-actions">
+            <a href="#produk" class="btn-outline" data-magnetic>Jelajahi Produk</a>
+            <button type="button" class="btn-primary" data-magnetic data-order>Pesan Sekarang</button>
+          </div>
+
+          <!-- 3D controls -->
+          <div class="hero-3d-controls" id="heroControls">
+            <span class="controls-hint">Seret produk untuk melihat 360°</span>
+            <div class="controls-row">
+              <button type="button" class="ctrl-chip" data-rotate aria-label="Putar otomatis">
+                <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12a9 9 0 1 1-2.64-6.36"/><path d="M21 3v6h-6"/></svg>
+                <span>Autorotate</span>
+              </button>
+              <button type="button" class="ctrl-chip" data-zoom aria-label="Zoom">
+                <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/><path d="M11 8v6M8 11h6"/></svg>
+                <span>Zoom</span>
+              </button>
+              <button type="button" class="ctrl-chip" data-reset aria-label="Reset kamera">
+                <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+                <span>Reset</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- RIGHT: product stage (fallback + three.js share space) -->
+        <div class="hero-stage" id="heroStage">
+          <!-- WebGL canvas (Three.js) -->
+          <canvas id="hero-canvas" class="hero-canvas" aria-hidden="true"></canvas>
+
+          <!-- CSS 3D fallback product (always present initially; hidden when WebGL active) -->
+          <div class="fallback-product" id="fallbackProduct" aria-hidden="false">
+            <div class="fp-inner">
+              <div class="fp-front">
+                <img src="assets/products/web/products2.webp" alt="Kopi Robusta Lampung" loading="eager" />
+              </div>
+              <div class="fp-back"><img src="assets/products/web/products8.webp" alt="" role="presentation" /></div>
+              <div class="fp-left"></div>
+              <div class="fp-right"></div>
+              <div class="fp-top"></div>
+              <div class="fp-bottom"></div>
+            </div>
+            <div class="fp-glow"></div>
+            <div class="fp-shadow"></div>
+            <div class="fp-reflection"></div>
+          </div>
+
+          <!-- floating beans overlay (CSS) -->
+          <div class="float-beans" aria-hidden="true">
+            <span class="bean b1"></span><span class="bean b2"></span><span class="bean b3"></span><span class="bean b4"></span>
+          </div>
+        </div>
+      </div>
+
+      <!-- scroll indicator -->
+      <a href="#about" class="scroll-hint" aria-label="Gulir ke bawah">
+        <span class="scroll-text">Scroll</span>
+        <span class="scroll-wheel"></span>
+      </a>
+    </section>
+<!--@@ABOUT@@-->
+    <!-- ============ PAGE 2: ABOUT ============ -->
+    <section id="about" class="section about-sec">
+      <div class="container">
+        <div class="sec-head">
+          <span class="eyebrow" data-reveal>Tentang Kami</span>
+          <h2 class="sec-title" data-reveal>Tentang <em>Demonz</em></h2>
+          <span class="sec-rule" data-reveal></span>
+        </div>
+
+        <div class="about-grid">
+          <!-- Owner photo -->
+          <div class="owner-visual" data-tilt-reveal>
+            <div class="owner-frame">
+              <img src="assets/owner/web/owner1.webp" alt="Muhammad Munir Alfaruq — Founder Demonz Coffee" loading="lazy" />
+              <div class="owner-shine"></div>
+            </div>
+            <div class="owner-card">
+              <p class="owner-name">Muhammad Munir Alfaruq</p>
+              <p class="owner-role">Founder Demonz Coffee</p>
+            </div>
+          </div>
+
+          <!-- Story -->
+          <div class="about-copy">
+            <p class="lead" data-reveal>
+              Nama <strong class="gold-txt">"Demonz"</strong> berasal dari julukan yang saya dapatkan ketika bermain
+              <strong>Call of Duty Mobile</strong> sebagai pengguna sniper.
+            </p>
+            <p class="body-copy" data-reveal>
+              Julukan tersebut kemudian berkembang menjadi identitas pribadi dan menjadi fondasi lahirnya
+              <strong class="gold-txt">Demonz Coffee</strong>, sebuah brand yang membawa semangat ketelitian,
+              konsistensi, dan kualitas dalam setiap produk.
+            </p>
+
+            <!-- Horizontal timeline -->
+            <div class="timeline-h" data-reveal>
+              <div class="tli is-current">
+                <span class="tli-node"><i></i></span>
+                <p class="tli-label">COD Mobile</p>
+              </div>
+              <span class="tli-arrow"></span>
+              <div class="tli">
+                <span class="tli-node"><i></i></span>
+                <p class="tli-label">Demonz</p>
+              </div>
+              <span class="tli-arrow"></span>
+              <div class="tli">
+                <span class="tli-node"><i></i></span>
+                <p class="tli-label">Belajar Digital</p>
+              </div>
+              <span class="tli-arrow"></span>
+              <div class="tli">
+                <span class="tli-node"><i></i></span>
+                <p class="tli-label">Membangun Brand</p>
+              </div>
+              <span class="tli-arrow"></span>
+              <div class="tli is-current">
+                <span class="tli-node"><i></i></span>
+                <p class="tli-label">Demonz Coffee</p>
+              </div>
+            </div>
+
+            <blockquote class="vision" data-reveal>
+              <p>"Menjadikan Demonz Coffee sebagai brand kopi lokal Indonesia yang dikenal melalui kualitas, inovasi, dan pengalaman terbaik bagi setiap pelanggan."</p>
+              <cite>— Visi Demonz Coffee</cite>
+            </blockquote>
+          </div>
+        </div>
+      </div>
+    </section>
+<!--@@PRODUK@@-->
+    <!-- ============ PAGE 3: PRODUK ============ -->
+    <section id="produk" class="section produk-sec">
+      <div class="container">
+        <div class="sec-head">
+          <span class="eyebrow" data-reveal>Koleksi Kami</span>
+          <h2 class="sec-title" data-reveal>Produk <em>Premium</em></h2>
+          <span class="sec-rule" data-reveal></span>
+        </div>
+
+        <div class="produk-toolbar glass" data-reveal>
+          <!-- Filter -->
+          <div class="filter-group" id="productFilter">
+            <button type="button" class="fi is-active" data-cat="all">Semua</button>
+            <button type="button" class="fi" data-cat="produk">Produk</button>
+            <button type="button" class="fi" data-cat="packaging">Packaging</button>
+            <button type="button" class="fi" data-cat="beans">Bahan</button>
+          </div>
+          <!-- Search -->
+          <div class="search-wrap">
+            <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+            <input type="text" id="productSearch" placeholder="Cari produk..." aria-label="Cari produk" />
+          </div>
+        </div>
+
+        <div class="product-grid" id="productGrid">
+          <!-- Card 1 -->
+          <article class="product-card glass" data-tilt data-name="Robusta Lampung" data-cat="produk">
+            <div class="pc-media">
+              <img src="assets/products/web/products2.webp" alt="Robusta Lampung — Natural Process, Medium Roast" loading="lazy" />
+              <span class="pc-badge">Best Seller</span>
+              <button type="button" class="pc-zoom" data-lightbox="assets/products/web/products2.webp" aria-label="Perbesar gambar">
+                <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/><path d="M11 8v6M8 11h6"/></svg>
+              </button>
+            </div>
+            <div class="pc-body">
+              <h3 class="pc-name">Robusta Lampung</h3>
+              <p class="pc-tag">Natural Process · 100% Robusta · Medium Roast</p>
+              <div class="pc-rate" aria-label="Rating 4.9 dari 5">
+                <span class="stars" data-score="4.9"></span>
+                <span class="pc-score">4.9</span>
+              </div>
+              <div class="pc-profile">
+                <div class="pf-row"><span>Body</span><div class="pf-bar"><i style="--w:92%"></i></div><b>9</b></div>
+                <div class="pf-row"><span>Acidity</span><div class="pf-bar"><i style="--w:55%"></i></div><b>6</b></div>
+                <div class="pf-row"><span>Sweetness</span><div class="pf-bar"><i style="--w:78%"></i></div><b>8</b></div>
+              </div>
+              <div class="pc-foot">
+                <span class="pc-price">Rp25.000</span>
+                <div class="pc-btns">
+                  <button type="button" class="btn-detail" data-detail="Robusta Lampung">Detail</button>
+                  <button type="button" class="btn-order" data-order>Pesan</button>
+                </div>
+              </div>
+            </div>
+          </article>
+
+          <!-- Card 2 -->
+          <article class="product-card glass" data-tilt data-name="Signature Pack" data-cat="packaging">
+            <div class="pc-media">
+              <img src="assets/products/web/products8.webp" alt="Signature Pack — packing premium Demonz Coffee" loading="lazy" />
+              <span class="pc-badge">Premium Pack</span>
+              <button type="button" class="pc-zoom" data-lightbox="assets/products/web/products8.webp" aria-label="Perbesar gambar">
+                <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/><path d="M11 8v6M8 11h6"/></svg>
+              </button>
+            </div>
+            <div class="pc-body">
+              <h3 class="pc-name">Signature Pack</h3>
+              <p class="pc-tag">Packing premium · aman · fresh seal</p>
+              <div class="pc-rate" aria-label="Rating 5.0 dari 5">
+                <span class="stars" data-score="5"></span>
+                <span class="pc-score">5.0</span>
+              </div>
+              <div class="pc-profile">
+                <div class="pf-row"><span>Body</span><div class="pf-bar"><i style="--w:90%"></i></div><b>9</b></div>
+                <div class="pf-row"><span>Acidity</span><div class="pf-bar"><i style="--w:58%"></i></div><b>6</b></div>
+                <div class="pf-row"><span>Sweetness</span><div class="pf-bar"><i style="--w:80%"></i></div><b>8</b></div>
+              </div>
+              <div class="pc-foot">
+                <span class="pc-price">Rp25.000</span>
+                <div class="pc-btns">
+                  <button type="button" class="btn-detail" data-detail="Signature Pack">Detail</button>
+                  <button type="button" class="btn-order" data-order>Pesan</button>
+                </div>
+              </div>
+            </div>
+          </article>
+
+          <!-- Card 3 -->
+          <article class="product-card glass" data-tilt data-name="Natural Beans" data-cat="beans">
+            <div class="pc-media">
+              <img src="assets/products/web/products5.webp" alt="Natural Beans — biji Robusta Lampung asli" loading="lazy" />
+              <span class="pc-badge">100% Robusta</span>
+              <button type="button" class="pc-zoom" data-lightbox="assets/products/web/products5.webp" aria-label="Perbesar gambar">
+                <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/><path d="M11 8v6M8 11h6"/></svg>
+              </button>
+            </div>
+            <div class="pc-body">
+              <h3 class="pc-name">Natural Beans</h3>
+              <p class="pc-tag">Biji utuh · aroma kuat · khas Lampung</p>
+              <div class="pc-rate" aria-label="Rating 4.8 dari 5">
+                <span class="stars" data-score="4.8"></span>
+                <span class="pc-score">4.8</span>
+              </div>
+              <div class="pc-profile">
+                <div class="pf-row"><span>Body</span><div class="pf-bar"><i style="--w:95%"></i></div><b>10</b></div>
+                <div class="pf-row"><span>Acidity</span><div class="pf-bar"><i style="--w:50%"></i></div><b>5</b></div>
+                <div class="pf-row"><span>Sweetness</span><div class="pf-bar"><i style="--w:75%"></i></div><b>8</b></div>
+              </div>
+              <div class="pc-foot">
+                <span class="pc-price">Rp25.000</span>
+                <div class="pc-btns">
+                  <button type="button" class="btn-detail" data-detail="Natural Beans">Detail</button>
+                  <button type="button" class="btn-order" data-order>Pesan</button>
+                </div>
+              </div>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+<!--@@GALERI@@-->
+    <!-- ============ PAGE 4: GALERI ============ -->
+    <section id="galeri" class="section galeri-sec">
+      <div class="container">
+        <div class="sec-head">
+          <span class="eyebrow" data-reveal>Galeri</span>
+          <h2 class="sec-title" data-reveal>Di Balik <em>Setiap Sajian</em></h2>
+          <span class="sec-rule" data-reveal></span>
+        </div>
+
+        <div class="gallery-filter glass" data-reveal id="galleryFilter">
+          <button type="button" class="gi is-active" data-filt="all">Semua</button>
+          <button type="button" class="gi" data-filt="produk">Produk</button>
+          <button type="button" class="gi" data-filt="packaging">Packaging</button>
+          <button type="button" class="gi" data-filt="owner">Owner</button>
+          <button type="button" class="gi" data-filt="proses">Proses</button>
+          <button type="button" class="gi" data-filt="branding">Branding</button>
+        </div>
+
+        <div class="masonry" id="galleryMasonry"><!-- items injected by JS --></div>
+      </div>
+    </section>
+
+    <!-- ============ PAGE 5: TESTIMONI ============ -->
+    <section id="testimoni" class="section testi-sec">
+      <div class="container container-narrow">
+        <div class="sec-head">
+          <span class="eyebrow" data-reveal>Testimoni</span>
+          <h2 class="sec-title" data-reveal>Apa Kata <em>Mereka</em></h2>
+          <span class="sec-rule" data-reveal></span>
+        </div>
+
+        <div class="swiper testi-swiper" data-reveal>
+          <div class="swiper-wrapper">
+            <!-- Testimonial 1 -->
+            <div class="swiper-slide">
+              <figure class="testi-card glass">
+                <div class="t-quote" aria-hidden="true">
+                  <svg class="ic" viewBox="0 0 24 24" fill="currentColor"><path d="M10 7H6a3 3 0 0 0-3 3v4a3 3 0 0 0 3 3h2a3 3 0 0 0 3-3v-5a2 2 0 0 0-1-2Z"/><path d="M21 7h-4a3 3 0 0 0-3 3v4a3 3 0 0 0 3 3h2a3 3 0 0 0 3-3v-5a2 2 0 0 0-1-2Z"/></svg>
+                </div>
+                <div class="stars stars-lg" data-score="5"></div>
+                <blockquote>"Saya sudah mencoba berbagai kopi lokal, tetapi Demonz Coffee memiliki aroma dan rasa yang benar-benar berbeda."</blockquote>
+                <figcaption class="t-author">
+                  <img src="assets/products/web/products1.webp" alt="Foto Andi R" class="t-avatar" loading="lazy" />
+                  <span class="t-meta"><b>Andi R</b><br /><small>Pecinta Kopi — Jakarta</small></span>
+                </figcaption>
+              </figure>
+            </div>
+            <!-- Testimonial 2 -->
+            <div class="swiper-slide">
+              <figure class="testi-card glass">
+                <div class="t-quote" aria-hidden="true">
+                  <svg class="ic" viewBox="0 0 24 24" fill="currentColor"><path d="M10 7H6a3 3 0 0 0-3 3v4a3 3 0 0 0 3 3h2a3 3 0 0 0 3-3v-5a2 2 0 0 0-1-2Z"/><path d="M21 7h-4a3 3 0 0 0-3 3v4a3 3 0 0 0 3 3h2a3 3 0 0 0 3-3v-5a2 2 0 0 0-1-2Z"/></svg>
+                </div>
+                <div class="stars stars-lg" data-score="5"></div>
+                <blockquote>"Sangat cocok diminum pagi maupun malam. Pengiriman cepat dan kualitas produk sangat baik."</blockquote>
+                <figcaption class="t-author">
+                  <img src="assets/products/web/products4.webp" alt="Foto Siti" class="t-avatar" loading="lazy" />
+                  <span class="t-meta"><b>Siti N</b><br /><small>Home Brewer — Bandar Lampung</small></span>
+                </figcaption>
+              </figure>
+            </div>
+            <!-- Testimonial 3 -->
+            <div class="swiper-slide">
+              <figure class="testi-card glass">
+                <div class="t-quote" aria-hidden="true">
+                  <svg class="ic" viewBox="0 0 24 24" fill="currentColor"><path d="M10 7H6a3 3 0 0 0-3 3v4a3 3 0 0 0 3 3h2a3 3 0 0 0 3-3v-5a2 2 0 0 0-1-2Z"/><path d="M21 7h-4a3 3 0 0 0-3 3v4a3 3 0 0 0 3 3h2a3 3 0 0 0 3-3v-5a2 2 0 0 0-1-2Z"/></svg>
+                </div>
+                <div class="stars stars-lg" data-score="5"></div>
+                <blockquote>"Packaging rapi, aroma khas Robusta Lampung sangat terasa. Akan membeli lagi."</blockquote>
+                <figcaption class="t-author">
+                  <img src="assets/products/web/products7.webp" alt="Foto Rizky" class="t-avatar" loading="lazy" />
+                  <span class="t-meta"><b>Rizky M</b><br /><small>Kafe Owner — Indonesia</small></span>
+                </figcaption>
+              </figure>
+            </div>
+          </div>
+          <div class="swiper-pagination"></div>
+        </div>
+      </div>
+    </section>
+<!--@@KONTAK@@-->
+    <!-- ============ PAGE 6: KONTAK ============ -->
+    <section id="kontak" class="section kontak-sec">
+      <div class="container">
+        <div class="sec-head">
+          <span class="eyebrow" data-reveal>Hubungi Kami</span>
+          <h2 class="sec-title" data-reveal>Mari <em>Terhubung</em></h2>
+          <span class="sec-rule" data-reveal></span>
+        </div>
+
+        <div class="kontak-grid">
+          <!-- Info + Map -->
+          <div class="kontak-info">
+            <div class="map-frame glass">
+              <iframe src="https://www.google.com/maps?q=Lampung,+Indonesia&output=embed" width="100%" height="260" style="border:0" title="Lokasi Demonz Coffee" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+            </div>
+
+            <div class="info-list">
+              <a href="https://wa.me/6285129821771" target="_blank" rel="noopener" class="info-item" data-magnetic>
+                <span class="ii-ico"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5Z"/></svg></span>
+                <span class="ii-body"><b>WhatsApp</b><small>+62 851 2982 1771</small></span>
+              </a>
+              <a href="https://instagram.com/demonzcoffe.id" target="_blank" rel="noopener" class="info-item" data-magnetic>
+                <span class="ii-ico"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><path d="M17.5 6.5h.01"/></svg></span>
+                <span class="ii-body"><b>Instagram</b><small>@demonzcoffe.id</small></span>
+              </a>
+              <a href="https://www.tiktok.com/@demonzcoffe.id" target="_blank" rel="noopener" class="info-item" data-magnetic>
+                <span class="ii-ico"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 12a4 4 0 1 0 4 4V4a5 5 0 0 0 5 5"/></svg></span>
+                <span class="ii-body"><b>TikTok</b><small>@demonzcoffe.id</small></span>
+              </a>
+              <a href="https://s.shopee.co.id/50XueICfLA" target="_blank" rel="noopener" class="info-item" data-magnetic>
+                <span class="ii-ico"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2h12M6 2 4 8m2-6 2 6M18 2l2 6m-2-6-2 6M4 8h16l-1.5 12a1 1 0 0 1-1 .7H6.5a1 1 0 0 1-1-.7Z"/><path d="M3 8h18"/></svg></span>
+                <span class="ii-body"><b>Shopee</b><small>Demonz Coffee</small></span>
+              </a>
+              <div class="info-item">
+                <span class="ii-ico"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg></span>
+                <span class="ii-body"><b>Alamat</b><small>Lampung, Indonesia</small></span>
+              </div>
+              <div class="info-item">
+                <span class="ii-ico"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg></span>
+                <span class="ii-body"><b>Jam Operasional</b><small>Senin — Minggu · 08.00 – 21.00</small></span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Contact form -->
+          <div class="kontak-form">
+            <form class="glass form-card" id="contactForm">
+              <h3 class="form-title">Kirim Pesan</h3>
+              <div class="field">
+                <label for="ctName">Nama</label>
+                <input type="text" id="ctName" name="nama" placeholder="Nama lengkap Anda" required />
+              </div>
+              <div class="field">
+                <label for="ctEmail">Email</label>
+                <input type="email" id="ctEmail" name="email" placeholder="email@contoh.com" required />
+              </div>
+              <div class="field">
+                <label for="ctMsg">Pesan</label>
+                <textarea id="ctMsg" name="pesan" rows="4" placeholder="Tulis pesan Anda..." required></textarea>
+              </div>
+              <button type="submit" class="btn-primary w-full" data-magnetic>
+                Kirim Pesan
+                <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 2 11 13"/><path d="M22 2 15 22 11 13 2 9 22 2Z"/></svg>
+              </button>
+              <p class="form-msg" id="formMsg" role="status" aria-live="polite"></p>
+            </form>
+          </div>
+        </div>
+      </div>
+
+      <!-- CTA Banner -->
+      <div class="cta-zone" data-reveal>
+        <div class="cta-bg" aria-hidden="true">
+          <img src="assets/products/web/products4.webp" alt="" loading="lazy" />
+        </div>
+        <div class="cta-overlay"></div>
+        <div class="cta-smoke" aria-hidden="true"><i></i><i></i><i></i></div>
+        <div class="cta-content">
+          <h2 class="cta-title">Siap menikmati kopi asli Lampung?</h2>
+          <p class="cta-sub">Kami siap mengantar cita rasa terbaik langsung ke rumah Anda.</p>
+          <div class="cta-actions">
+            <a href="https://s.shopee.co.id/50XueICfLA" target="_blank" rel="noopener" class="btn-primary" data-magnetic>Pesan via Shopee</a>
+            <a href="https://wa.me/6285129821771" target="_blank" rel="noopener" class="btn-outline" data-magnetic>Pesan via WhatsApp</a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- ============ FOOTER ============ -->
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <a href="#home" class="brand">
+            <img src="assets/logo/web/logo2.webp" alt="Demonz Coffee" width="44" height="44" loading="lazy" />
+            <span class="brand-name">DEMONZ <em>Coffee</em></span>
+          </a>
+          <p>Premium Robusta Lampung dengan cita rasa khas Indonesia. POWER IN EVERY SIP.</p>
+        </div>
+
+        <div class="footer-col">
+          <h4>Quick Links</h4>
+          <ul>
+            <li><a href="#home">Home</a></li>
+            <li><a href="#about">Tentang</a></li>
+            <li><a href="#produk">Produk</a></li>
+            <li><a href="#galeri">Galeri</a></li>
+            <li><a href="#testimoni">Testimoni</a></li>
+            <li><a href="#kontak">Kontak</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-col">
+          <h4>Sosial Media</h4>
+          <ul>
+            <li><a href="https://instagram.com/demonzcoffe.id" target="_blank" rel="noopener">Instagram</a></li>
+            <li><a href="https://www.tiktok.com/@demonzcoffe.id" target="_blank" rel="noopener">TikTok</a></li>
+            <li><a href="https://s.shopee.co.id/50XueICfLA" target="_blank" rel="noopener">Shopee</a></li>
+            <li><a href="https://www.google.com/maps?q=Lampung" target="_blank" rel="noopener">Google Maps</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-col">
+          <h4>Legal</h4>
+          <ul>
+            <li><a href="#" data-privacy>Privacy Policy</a></li>
+            <li><a href="#" data-terms>Terms of Service</a></li>
+          </ul>
+        </div>
+      </div>
+
+
+      <div class="footer-bottom">
+        <p>© 2026 Demonz Coffee. All Rights Reserved.</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ORDER MODAL -->
+  <div class="modal" id="orderModal" role="dialog" aria-modal="true" aria-label="Pesan Sekarang">
+    <div class="modal-overlay-bg" data-close></div>
+    <div class="modal-box glass-strong">
+      <button type="button" class="modal-close" data-close aria-label="Tutup">
+        <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18M6 6l12 12"/></svg>
+      </button>
+      <h3 class="modal-title">Pesan Sekarang</h3>
+      <p class="modal-sub">Pilih platform pemesanan favorit Anda</p>
+      <div class="order-grid">
+        <a href="https://s.shopee.co.id/50XueICfLA" target="_blank" rel="noopener" class="order-card" data-magnetic>
+          <span class="oc-ico">
+            <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2h12M6 2 4 8m2-6 2 6M18 2l2 6m-2-6-2 6M4 8h16l-1.5 12a1 1 0 0 1-1 .7H6.5a1 1 0 0 1-1-.7Z"/></svg>
+          </span>
+          <b>Shopee</b>
+          <span class="oc-btn">Beli di Shopee</span>
+        </a>
+        <a href="https://wa.me/6285129821771" target="_blank" rel="noopener" class="order-card" data-magnetic>
+          <span class="oc-ico wa">
+            <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5Z"/></svg>
+          </span>
+          <b>WhatsApp</b>
+          <span class="oc-btn wa">Pesan via WhatsApp</span>
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- DETAIL MODAL -->
+  <div class="modal" id="detailModal" role="dialog" aria-modal="true" aria-label="Detail Produk">
+    <div class="modal-overlay-bg" data-close></div>
+    <div class="modal-box glass-strong detail-box">
+      <button type="button" class="modal-close" data-close aria-label="Tutup">
+        <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18M6 6l12 12"/></svg>
+      </button>
+      <h3 class="modal-title" id="detailTitle">Detail Produk</h3>
+      <ul class="detail-list">
+        <li><span>Jenis</span><b>Robusta</b></li>
+        <li><span>Proses</span><b>Natural Process</b></li>
+        <li><span>Roast</span><b>Medium Roast</b></li>
+        <li><span>Asal</span><b>Lampung, Indonesia</b></li>
+        <li><span>Netto</span><b>± 250 gr</b></li>
+        <li><span>Catatan Rasa</span><b>Kakao, hazelnut, rempah</b></li>
+      </ul>
+      <button type="button" class="btn-primary w-full" data-close data-order-inner>Pesan Sekarang</button>
+    </div>
+  </div>
+
+  <!-- LIGHTBOX -->
+  <div class="modal lightbox-modal" id="lightboxModal" role="dialog" aria-modal="true" aria-label="Pratinjau gambar">
+    <div class="modal-overlay-bg" data-close-lightbox></div>
+    <button type="button" class="modal-close lightbox-close" data-close-lightbox aria-label="Tutup">
+      <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18M6 6l12 12"/></svg>
+    </button>
+    <div class="lightbox-stage"><img id="lightboxImg" src="" alt="Pratinjau gambar" /></div>
+  </div>
+
+  <!-- BACK TO TOP -->
+  <button type="button" id="backTop" class="back-top" aria-label="Kembali ke atas">
+    <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m18 15-6-6-6 6"/></svg>
+  </button>
+
+  <!-- SCRIPTS -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="https://unpkg.com/lenis@1.1.14/dist/lenis.min.js"></script>
+  <script src="https://unpkg.com/swiper@11/swiper-bundle.min.js"></script>
+  <script src="https://unpkg.com/vanilla-tilt@1.8.1/dist/vanilla-tilt.min.js"></script>
+  <script src="https://unpkg.com/typed.js@2.1.0/dist/typed.umd.js"></script>
+  <script src="js/three-hero.js"></script>
+  <script src="js/main.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

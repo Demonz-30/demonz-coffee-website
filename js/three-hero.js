@@ -1,347 +1,367 @@
 /* ============================================================
-   DEMONZ COFFEE — Three.js Hero
-   - 360° rotatable 3D coffee product (drag or touch)
-   - Steaming smoke, floating beans, floating particles
-   - Cinematic lighting, gold/orange rim light
+   DEMONZ COFFEE — Three.js Hero (Milestone B2)
+   - PNG product as auto-fallback surface (no GLB required -> never blank)
+   - OrbitControls: drag rotate, wheel/drag zoom (custom), reset camera
+   - Auto Rotate toggle
+   - Ambient + Directional lights, soft shadow, procedural env reflection
+   - ACES tone mapping
+   - Lazy-load via IntersectionObserver; full cleanup (no memory leaks)
+   - If WebGL / Three fails to load => fallback PNG stays visible
    ============================================================ */
 (function () {
-  const canvas = document.getElementById('hero-canvas');
-  const fallbackProduct = document.getElementById('fallbackProduct');
+  'use strict';
 
-  // If the Three.js library or the canvas is missing, keep the CSS 3D fallback
-  // product visible and hide the empty canvas so the page never shows a blank gap.
-  if (!canvas || !window.THREE) {
-    if (canvas) canvas.style.display = 'none';
+  const canvas = document.getElementById('hero-canvas');
+  const stage = document.getElementById('heroStage');
+  const fallbackProduct = document.getElementById('fallbackProduct');
+  const controlsEl = document.getElementById('heroControls');
+
+  // Graceful bail: keep the premium PNG showcase if canvas/Three is missing.
+  if (!canvas || !window.THREE || typeof window.THREE.WebGLRenderer !== 'function') {
+    if (canvas) canvas.setAttribute('data-state', 'off');
     return;
   }
 
-  let renderer, scene, camera, productGroup, coffee, steamParticles = [];
+  let renderer = null, scene = null, camera = null, controls = null;
+  let product = null, envPMREM = null, clock = null, under = null;
   let autoRotate = true;
   let zoomed = false;
-  let isDragging = false;
-  let rotationTarget = null;
-  // Product sits left-of-center, large, on the golden ground disc
-  let initialPos = new THREE.Vector3(-1.6, -0.4, 0);
+  let defaultPos = { x: 0, y: 0, z: 7 };
+  let started = false;
+  let disposed = true;
 
-  var clock = new THREE.Clock();
+  var color = new window.THREE.Color();
 
-  // Hide the CSS 3D fallback product once the real WebGL scene is running so
-  // the two products never overlap. (Keeps the layout identical.)
-  function hideFallback() {
-    if (fallbackProduct) fallbackProduct.classList.add('is-hidden');
-  }
-
-  // Only initialise WebGL if we can actually create a renderer. If WebGL is
-  // unavailable, the CSS fallback product stays visible instead of blank.
-  try {
-    init();
-    hideFallback();
-    animate();
-  } catch (e) {
-    if (canvas) canvas.style.display = 'none';
-    // fallback product remains visible
+  function buildPmremEnvironment() {
+    // Procedural "Room" environment for reflections (no external HDR needed).
+    const geo = new window.THREE.RoomEnvironment ? null : new window.THREE.BoxGeometry(1, 1, 1);
+    // Re-implement a tiny gradient environment so MeshStandardMaterial has envMap.
+    const sceneEnv = new window.THREE.Scene();
+    const pmrem = new window.THREE.PMREMGenerator(renderer);
+    if (window.THREE.RoomEnvironment) {
+      const envScene = new window.THREE.RoomEnvironment();
+      envPMREM = pmrem.fromScene(envScene, 0.04);
+    } else {
+      // simple gradient dome fallback
+      const domeMat = new window.THREE.MeshBasicMaterial({ color: 0x141414, side: window.THREE.BackSide });
+      const dome = new window.THREE.Mesh(geo, domeMat);
+      sceneEnv.add(dome);
+      const glow = new window.THREE.SpotLight(0xF5B041, 2, 20, 0.6);
+      glow.position.set(3, 4, 3);
+      sceneEnv.add(glow);
+      const rim = new window.THREE.SpotLight(0xFF8C00, 1.5, 20, 0.6);
+      rim.position.set(-3, 1, -3);
+      sceneEnv.add(rim);
+      envPMREM = pmrem.fromScene(sceneEnv, 0.04);
+    }
+    pmrem.dispose();
+    return envPMREM;
   }
 
   function init() {
+    const THREE = window.THREE;
+    clock = new THREE.Clock();
+
     // Scene
     scene = new THREE.Scene();
-    scene.fog = new THREE.Fog(0x050505, 6, 14);
+    scene.background = null; // transparent overlay over CSS bg
+    scene.fog = new THREE.Fog(0x050505, 10, 22);
 
     // Camera
-    camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 100);
-    camera.position.set(0, 0, 7.5);
+    camera = new THREE.PerspectiveCamera(45, 1, 0.1, 60);
+    camera.position.set(defaultPos.x, defaultPos.y, defaultPos.z);
 
     // Renderer
-    renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true, alpha: true });
+    renderer = new THREE.WebGLRenderer({
+      canvas: canvas, antialias: true, alpha: true, powerPreference: 'high-performance'
+    });
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setClearColor(0x000000, 0);
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
-    renderer.toneMappingExposure = 1.1;
+    renderer.toneMappingExposure = 1.15;
+    renderer.outputEncoding = THREE.sRGBEncoding;
+    renderer.shadowMap.enabled = true;
+    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 
-    // ============ Cinematic Lighting ============
-    const ambient = new THREE.AmbientLight(0xffffff, 0.35);
+    // Environment (reflection)
+    envPMREM = buildPmremEnvironment();
+    scene.environment = envPMREM ? envPMREM.texture : null;
+
+    // ---- Lighting ----
+    const ambient = new THREE.AmbientLight(0xffffff, 0.6);
     scene.add(ambient);
 
-    // Gold key light (cinematic warm)
-    const keyLight = new THREE.DirectionalLight(0xF5B041, 1.4);
-    keyLight.position.set(4, 3, 5);
-    scene.add(keyLight);
+    const key = new THREE.DirectionalLight(0xF5B041, 1.6);
+    key.position.set(4, 6, 5);
+    key.castShadow = true;
+    key.shadow.mapSize.set(1024, 1024);
+    key.shadow.radius = 6;
+    key.shadow.bias = -0.0005;
+    scene.add(key);
 
-    // Orange fill / rim light
-    const rimLight = new THREE.DirectionalLight(0xFF8C00, 1.0);
-    rimLight.position.set(-4, 0.5, -3);
-    scene.add(rimLight);
-
-    // Soft cool fill
-    const fill = new THREE.DirectionalLight(0x4455aa, 0.4);
-    fill.position.set(0, -2, 4);
+    const fill = new THREE.DirectionalLight(0x4455aa, 0.5);
+    fill.position.set(-4, 1, 3);
     scene.add(fill);
 
-    // Point glow beneath (table glow)
-    const underGlow = new THREE.PointLight(0xFF8C00, 1.2, 6, 1.8);
-    underGlow.position.set(0.5, -1.6, 0.5);
-    scene.add(underGlow);
+    const rim = new THREE.DirectionalLight(0xFF8C00, 0.9);
+    rim.position.set(-3, 0, -4);
+    scene.add(rim);
 
-    // ============ Product Group (coffee + steam) ============
-    productGroup = new THREE.Group();
-    productGroup.position.copy(initialPos);
-    scene.add(productGroup);
+    under = new THREE.PointLight(0xFF8C00, 1.1, 6, 1.8);
+    under.position.set(0, -1.8, 0.6);
+    under.castShadow = false;
+    scene.add(under);
 
-    buildCoffeeProduct();
-    buildSteam();
-    buildFloatingBeans();
-    buildParticles();
+    // ---- Product (PNG surface, double-sided so it never looks blank) ----
+    product = buildProduct();
 
-    // Responsive: on small/narrow screens center the product rather than place off-left
-    applyResponsivePosition();
-    window.addEventListener('resize', applyResponsivePosition);
-
-    // ============ Interaction ============
-    canvas.addEventListener('pointerdown', onPointerDown);
-    canvas.addEventListener('pointermove', onPointerMove);
-    window.addEventListener('pointerup', onPointerUp);
-    canvas.addEventListener('touchstart', onPointerDown, { passive: true });
-    canvas.addEventListener('touchmove', onPointerMove, { passive: true });
-    canvas.addEventListener('touchend', onPointerUp);
-    window.addEventListener('resize', onResize);
-
-    // Expose global controls
-    window.setAutoRotate = function (v) { autoRotate = typeof v === 'boolean' ? v : !autoRotate; };
-    window.setZoom = function () {
-      zoomed = !zoomed;
-      // zoom target pulled camera close to product (use current x)
-      rotationTarget = zoomed
-        ? new THREE.Vector3(initialPos.x, initialPos.y + 0.2, 3.6)
-        : new THREE.Vector3(0, 0, 7.5);
-    };
-    window.resetView = function () {
-      zoomed = false;
-      rotationTarget = new THREE.Vector3(0, 0, 7.5);
-      productGroup.rotation.set(0, 0, 0);
-      if (coffee) coffee.rotation.y = 0;
-    };
-  }
-
-  /* ---- Build the 3D coffee bag / cup product stack ---- */
-  function buildCoffeeProduct() {
-    productGroup = productGroup || new THREE.Group();
-
-    // ---- Pack of coffee (bag shape) - uses a box with rounded feel, floating above ground ----
-    const bagMat = new THREE.MeshPhysicalMaterial({
-      color: 0x181818,
-      metalness: 0.25,
-      roughness: 0.35,
-      clearcoat: 0.8,
-      clearcoatRoughness: 0.3
-    });
-
-    const bag = new THREE.Group();
-
-    // Main body (cylinder-ish box)
-    const bodyGeo = new THREE.CylinderGeometry(0.62, 0.62, 1.5, 32);
-    const body = new THREE.Mesh(bodyGeo, bagMat);
-    body.position.y = 0;
-    bag.add(body);
-
-    // Gold band (label)
-    const bandMat = new THREE.MeshPhysicalMaterial({
-      color: 0xF5B041, metalness: 0.6, roughness: 0.3, emissive: 0x3a2a00, emissiveIntensity: 0.15
-    });
-    const band = new THREE.Mesh(new THREE.CylinderGeometry(0.64, 0.64, 0.5, 32), bandMat);
-    band.position.y = 0.1;
-    bag.add(band);
-
-    // Lid / top ring (gold)
-    const lidMat = new THREE.MeshStandardMaterial({ color: 0x050505, metalness: 0.1, roughness: 0.6 });
-    const lid = new THREE.Mesh(new THREE.CylinderGeometry(0.4, 0.42, 0.25, 32), lidMat);
-    lid.position.y = 0.9;
-    bag.add(lid);
-
-    // Steam spout (cylinder)
-    const spoutMat = new THREE.MeshPhysicalMaterial({ color: 0xF5B041, metalness: 0.7, roughness: 0.25 });
-    const spout = new THREE.Mesh(new THREE.CylinderGeometry(0.05, 0.05, 0.5, 12), spoutMat);
-    spout.position.y = 1.15;
-    bag.add(spout);
-
-    // put bag on a ground disc
-    const discMat = new THREE.MeshPhysicalMaterial({
-      color: 0x181818, metalness: 0.8, roughness: 0.2, clearcoat: 1
-    });
-    const disc = new THREE.Mesh(new THREE.CircleGeometry(1.0, 48), discMat);
+    // Ground shadow disc (soft)
+    const disc = new THREE.Mesh(
+      new THREE.CircleGeometry(1.7, 48),
+      new THREE.MeshShadowMaterial
+        ? new THREE.MeshShadowMaterial({ opacity: 0.5 })
+        : new THREE.MeshStandardMaterial({ color: 0x000000, transparent: true, opacity: 0.45 })
+    );
     disc.rotation.x = -Math.PI / 2;
-    disc.position.y = -0.9;
-    bag.add(disc);
+    disc.position.y = -1.55;
+    disc.receiveShadow = true;
+    scene.add(disc);
 
-    // a few whole beans scattered on the disc
-    for (let i = 0; i < 6; i++) {
-      const beanMat = new THREE.MeshStandardMaterial({ color: 0x5d3a1a, roughness: 0.7 });
-      const bean = new THREE.Mesh(new THREE.SphereGeometry(0.06, 12, 12), beanMat);
-      const ang = (i / 6) * Math.PI * 2;
-      bean.position.x = Math.cos(ang) * 0.6;
-      bean.position.z = Math.sin(ang) * 0.6;
-      bean.scale.y = 1.4;
-      bean.position.y = -0.85;
-      bag.add(bean);
+    // ---- OrbitControls ----
+    if (THREE.OrbitControls) {
+      controls = new THREE.OrbitControls(camera, canvas);
+      controls.enableDamping = true;
+      controls.dampingFactor = 0.08;
+      controls.enableZoom = true;
+      controls.minDistance = 4.2;
+      controls.maxDistance = 12;
+      controls.enablePan = false;
+      controls.enableRotate = true;
+      controls.autoRotate = autoRotate;
+      controls.autoRotateSpeed = 0.9;
+      controls.target.set(0, 0, 0);
     }
 
-    // Scale up whole product
-    bag.scale.set(1.35, 1.35, 1.35);
-    bag.position.set(0, 0, 0);
-
-    productGroup.add(bag);
-    coffee = bag; // store reference for independent rotation
+    applyResponsive();
+    window.addEventListener('resize', applyResponsive);
   }
 
-  /* ---- Steam / smoke rising from spout ---- */
-  function buildSteam() {
-    const steamGeo = new THREE.SphereGeometry(1, 10, 10);
-    for (let i = 0; i < 14; i++) {
-      const mat = new THREE.MeshBasicMaterial({
-        color: 0xffffff,
-        opacity: 0.0,
-        transparent: true,
-        depthWrite: false
-      });
-      const puff = new THREE.Mesh(steamGeo, mat);
-      puff.material = mat;
-      const seed = Math.random();
-      puff.userData = {
-        baseY: 1.6, // just above spout top
-        speed: 0.4 + Math.random() * 0.5,
-        phase: seed * Math.PI * 2,
-        amp: 0.22
-      };
-      puff.position.set(initialPos.x, puff.userData.baseY, initialPos.z);
-      puff.scale.setScalar(0.4 + Math.random() * 0.6);
-      scene.add(puff);
-      steamParticles.push(puff);
-    }
-  }
+  function buildProduct() {
+    const THREE = window.THREE;
+    const group = new THREE.Group();
 
-  /* ---- Floating coffee beans (3D) ---- */
-  function buildFloatingBeans() {
-    const beanMat = new THREE.MeshStandardMaterial({ color: 0x6b4a2b, roughness: 0.65, metalness: 0.05 });
-    for (let i = 0; i < 12; i++) {
-      const bean = new THREE.Mesh(new THREE.SphereGeometry(0.1, 12, 12), beanMat);
-      bean.scale.set(1, 1.5, 0.7);
-      bean.userData = {
-        x: (Math.random() - 0.5) * 14,
-        y: Math.random() * 8 - 1,
-        z: -Math.random() * 7,
-        ry: Math.random() * Math.PI * 2,
-        speed: 0.2 + Math.random() * 0.5
-      };
-      bean.position.set(bean.userData.x, bean.userData.y, bean.userData.z);
-      scene.add(bean);
-    }
-    // store globally for animation
-    window.__floatBeans = [];
-    scene.traverse(o => { if (o.userData && o.userData.speed && o.geometry && o.geometry.type === 'SphereGeometry' && o.scale.y === 1.5) window.__floatBeans.push(o); });
-  }
-
-  /* ---- Dust / glowing particles (gold) ---- */
-  function buildParticles() {
-    const count = 350;
-    const geo = new THREE.BufferGeometry();
-    const pos = new Float32Array(count * 3);
-    for (let i = 0; i < count; i++) {
-      pos[i * 3] = (Math.random() - 0.5) * 16;
-      pos[i * 3 + 1] = (Math.random() - 0.5) * 10;
-      pos[i * 3 + 2] = (Math.random() - 0.5) * 8;
-    }
-    geo.setAttribute('position', new THREE.BufferAttribute(pos, 3));
-    const mat = new THREE.PointsMaterial({
-      color: 0xF5B041, size: 0.035, transparent: true, opacity: 0.7, depthWrite: false
+    // Load product PNG via TextureLoader. If it fails (offline/blocked), we
+    // still build a styled gold surface so the viewer is never blank.
+    let geo, mat;
+    mat = new THREE.MeshStandardMaterial({
+      color: 0x181818,
+      metalness: 0.4,
+      roughness: 0.35,
+      transparent: true
     });
-    const points = new THREE.Points(geo, mat);
-    scene.add(points);
-    window.__dust = points;
-  }
+    geo = new THREE.BoxGeometry(1.5, 2.0, 0.16);
 
-  /* ---- Responsive positioning of the product & steam ---- */
-  function applyResponsivePosition() {
-    var w = window.innerWidth;
-    var centerProduct = w < 900;
-    var targetX = centerProduct ? 0 : -1.6;
-    // only move if product is being added; else just set base for steam
-    initialPos.x = targetX;
-    initialPos.y = centerProduct ? -0.2 : -0.4;
-    if (productGroup) {
-      productGroup.position.x = initialPos.x;
-      productGroup.position.y = initialPos.y;
+    const card = new THREE.Mesh(geo, mat);
+    card.castShadow = true;
+    card.receiveShadow = true;
+
+    // Front & back face with PNG product texture (double-sided preview)
+    const faceMat = new THREE.MeshStandardMaterial({
+      map: null,
+      color: 0xffffff,
+      metalness: 0.2,
+      roughness: 0.45,
+      transparent: true
+    });
+    const texLoader = new THREE.TextureLoader();
+    texLoader.setCrossOrigin('anonymous');
+    texLoader.load(
+      'assets/products/web/products2.webp',
+      function (tex) {
+        tex.encoding = THREE.sRGBEncoding;
+        faceMat.map = tex;
+        faceMat.needsUpdate = true;
+        card.material = faceMat;
+      },
+      undefined,
+      function () {
+        // texture failed -> keep gold plate (never blank)
+        card.material = mat;
+      }
+    );
+    card.material = faceMat; // initial
+
+    // Gold frame trim
+    const frameMat = new THREE.MeshStandardMaterial({
+      color: 0xF5B041, metalness: 0.7, roughness: 0.3, emissive: 0x3a2a00, emissiveIntensity: 0.12
+    });
+    const frame = new THREE.Mesh(new THREE.BoxGeometry(1.58, 2.08, 0.04), frameMat);
+    frame.position.z = 0.02;
+    group.add(frame);
+
+    // floating coffee beans around the product (dynamic decoration)
+    const beanMat = new THREE.MeshStandardMaterial({ color: 0x6b4a2b, roughness: 0.6 });
+    for (let i = 0; i < 8; i++) {
+      const b = new THREE.Mesh(new THREE.SphereGeometry(0.09, 12, 12), beanMat);
+      b.scale.set(1, 1.5, 0.7);
+      const ang = (i / 8) * Math.PI * 2;
+      b.position.set(Math.cos(ang) * (1.6 + (i % 3) * 0.3), (i % 4) * 0.5 - 0.75, Math.sin(ang) * 0.4);
+      b.userData = { phase: i * 1.2, amp: 0.12, baseY: b.position.y };
+      group.add(b);
     }
-    steamParticles.forEach(function (p) { if (p.userData) { /* positions recomputed each frame */ } });
+
+    group.add(card);
+    group.position.y = 0;
+    return group;
   }
 
-  /* ---- Interactions ---- */
-  function onPointerDown(e) {
-    isDragging = true;
-    autoRotate = false;
+  function startIfNeeded() {
+    if (started && !disposed) { showCanvas(); return; }
+    try {
+      init();
+      started = true;
+      disposed = false;
+      showCanvas();
+      animate();
+    } catch (e) {
+      // WebGL init failed -> keep PNG fallback
+      fallbackToPng();
+    }
   }
-  function onPointerMove(e) {
-    if (!isDragging || !coffee) return;
-    const dx = e.movementX || 0;
-    const dy = e.movementY || 0;
-    coffee.rotation.y += dx * 0.008;
-    coffee.rotation.x += dy * 0.004;
-  }
-  function onPointerUp() { isDragging = false; }
 
-  /* ---- resize ---- */
-  function onResize() {
-    camera.aspect = window.innerWidth / window.innerHeight;
+  function showCanvas() {
+    if (canvas) {
+      canvas.style.display = 'block';
+      canvas.setAttribute('data-state', 'on');
+    }
+    // hide premium PNG showcase + reveal 3D controls now that WebGL is live
+    if (fallbackProduct) fallbackProduct.classList.add('is-hidden');
+    if (controlsEl) controlsEl.hidden = false;
+  }
+
+  function fallbackToPng() {
+    if (canvas) { canvas.style.display = 'none'; canvas.setAttribute('data-state', 'off'); }
+    if (fallbackProduct) fallbackProduct.classList.remove('is-hidden');
+    if (controlsEl) controlsEl.hidden = true;
+    dispose();
+  }
+
+  // ---- Lazy load: only start when hero is near viewport ----
+  if ('IntersectionObserver' in window) {
+    const io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
+        if (e.isIntersecting) {
+          startIfNeeded();
+          io.unobserve(e.target);
+        }
+      });
+    }, { rootMargin: '200px' });
+    io.observe(canvas);
+  } else {
+    if (window.requestIdleCallback) window.requestIdleCallback(startIfNeeded, { timeout: 800 });
+    else setTimeout(startIfNeeded, 200);
+  }
+
+  function applyResponsive() {
+    if (!renderer || !camera) return;
+    const w = stage ? stage.clientWidth : window.innerWidth;
+    const h = stage ? stage.clientHeight : window.innerHeight;
+    if (w === 0 || h === 0) return;
+    renderer.setSize(w, h, false);
+    camera.aspect = w / h;
     camera.updateProjectionMatrix();
-    renderer.setSize(window.innerWidth, window.innerHeight);
+    // center product on small screens already handled by single-column layout
+    defaultPos.x = w < 900 ? 0 : 0;
   }
 
-  function animate() {
+  // ---- Custom controls (Autorotate / Zoom / Reset) ----
+  window.setAutoRotate = function (v) {
+    autoRotate = typeof v === 'boolean' ? v : !autoRotate;
+    if (controls) controls.autoRotate = autoRotate;
+  };
+  window.setZoom = function () {
+    if (!controls || !camera) return;
+    zoomed = !zoomed;
+    if (zoomed) {
+      controls.minDistance = 2.8;
+      animateCameraTo(0, 0, 3.6);
+    } else {
+      controls.minDistance = 4.2;
+      animateCameraTo(defaultPos.x, defaultPos.y, defaultPos.z);
+    }
+  };
+  window.resetView = function () {
+    if (!controls || !camera) return;
+    zoomed = false;
+    controls.minDistance = 4.2;
+    autoRotate = true;
+    controls.autoRotate = true;
+    document.body.setAttribute('data-autorotate', '1');
+    animateCameraTo(defaultPos.x, defaultPos.y, defaultPos.z);
+    if (product) product.rotation.set(0, 0, 0);
+  };
+
+  var camTarget = null;
+  function animateCameraTo(x, y, z) {
+    camTarget = new window.THREE.Vector3(x, y, z);
+  }
+
+  function animate(/* keep going each frame */) {
+    if (disposed) return;
     requestAnimationFrame(animate);
-    if (!clock || !renderer) return;
+    if (!clock || !renderer || !scene || !camera) return;
     var t = clock.getElapsedTime();
 
-    if (autoRotate && coffee) {
-      coffee.rotation.y += 0.005;
-    }
-    // smooth camera zoom target
-    if (rotationTarget) {
-      camera.position.lerp(rotationTarget, 0.06);
-      if (camera.position.distanceTo(rotationTarget) < 0.05) rotationTarget = null;
+    // smooth camera move for zoom/reset
+    if (camTarget && controls) {
+      camera.position.lerp(camTarget, 0.08);
+      if (camera.position.distanceTo(camTarget) < 0.05) camTarget = null;
     }
 
-    // gentle product hover (cinematic float)
-    if (coffee) {
-      coffee.position.y = Math.sin(t * 0.8) * 0.08;
+    // gentle hover
+    if (product) {
+      product.position.y = Math.sin(t * 0.8) * 0.12;
     }
-    // steam follows product hover offset; always rise from spout local position
-    var hoverY = coffee ? Math.sin(t * 0.8) * 0.08 : 0;
-
-    // steam animation
-    steamParticles.forEach(function (p) {
-      if (!p.userData) return;
-      var life = (t * p.userData.speed + p.userData.phase) % 3;
-      var y = p.userData.baseY + life * 0.9 + hoverY;
-      var alpha = Math.sin(life / 3 * Math.PI);
-      p.position.y = y;
-      p.position.x = initialPos.x + Math.sin(t * 1.5 + p.userData.phase) * p.userData.amp;
-      p.position.z = initialPos.z + Math.cos(t * 1.2 + p.userData.phase) * 0.1;
-      p.material.opacity = Math.max(0, alpha) * 0.28;
-      p.scale.setScalar(0.5 + life * 0.4);
-    });
-
-    // floating beans
-    if (window.__floatBeans) {
-      window.__floatBeans.forEach(function (b) {
-        b.rotation.y += 0.008 * (b.userData.speed * 5);
-        b.position.y = b.userData.y + Math.sin(t * b.userData.speed + b.userData.ry) * 0.3;
+    // floating beans gentle bob
+    if (product) {
+      product.children.forEach(function (c) {
+        if (c.userData && c.userData.phase !== undefined) {
+          c.position.y = c.userData.baseY + Math.sin(t * 0.9 + c.userData.phase) * c.userData.amp;
+          c.rotation.y += 0.01;
+        }
       });
     }
 
-    // dust drift
-    if (window.__dust) {
-      window.__dust.rotation.y = t * 0.02;
-      window.__dust.position.y = Math.sin(t * 0.3) * 0.3;
-    }
+    // under-glow flicker subtle
+    if (under) under.intensity = 1.0 + Math.sin(t * 1.4) * 0.15;
 
+    if (controls) controls.update();
     renderer.render(scene, camera);
   }
+
+  // ---- Cleanup (memory leaks) ----
+  function dispose() {
+    if (!started) return;
+    disposed = true;
+    if (renderer) {
+      renderer.dispose();
+      renderer.renderLists.dispose && renderer.renderLists.dispose();
+    }
+    if (scene) {
+      scene.traverse(function (o) {
+        if (o.geometry) o.geometry.dispose();
+        if (o.material) {
+          var mats = Array.isArray(o.material) ? o.material : [o.material];
+          mats.forEach(function (m) {
+            if (m.map) m.map.dispose();
+            m.dispose();
+          });
+        }
+      });
+    }
+    if (envPMREM && envPMREM.texture) envPMREM.texture.dispose();
+    if (controls) { controls.dispose(); controls = null; }
+    window.removeEventListener('resize', applyResponsive);
+  }
+  window.addEventListener('beforeunload', dispose);
 })();

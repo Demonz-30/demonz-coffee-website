@@ -26,11 +26,9 @@
   let product = null, envPMREM = null, clock = null, under = null;
   let autoRotate = true;
   let zoomed = false;
-  let defaultPos = { x: 0, y: 0, z: 7 };
+  let defaultPos = { x: 0, y: 0.45, z: 6.2 }; // cinematic elevated framing
   let started = false;
   let disposed = true;
-
-  var color = new window.THREE.Color();
 
   function buildPmremEnvironment() {
     // Procedural "Room" environment for reflections (no external HDR needed).
@@ -91,7 +89,7 @@
     const ambient = new THREE.AmbientLight(0xffffff, 0.6);
     scene.add(ambient);
 
-    const key = new THREE.DirectionalLight(0xF5B041, 1.6);
+    const key = new THREE.DirectionalLight(0xF5B041, 1.65);
     key.position.set(4, 6, 5);
     key.castShadow = true;
     key.shadow.mapSize.set(1024, 1024);
@@ -103,29 +101,39 @@
     fill.position.set(-4, 1, 3);
     scene.add(fill);
 
-    const rim = new THREE.DirectionalLight(0xFF8C00, 0.9);
+    const rim = new THREE.DirectionalLight(0xFF8C00, 1.05);
     rim.position.set(-3, 0, -4);
     scene.add(rim);
 
-    under = new THREE.PointLight(0xFF8C00, 1.1, 6, 1.8);
-    under.position.set(0, -1.8, 0.6);
+    under = new THREE.PointLight(0xFF8C00, 1.15, 6, 1.8);
+    under.position.set(0, -1.9, 0.6);
     under.castShadow = false;
     scene.add(under);
 
     // ---- Product (PNG surface, double-sided so it never looks blank) ----
     product = buildProduct();
 
-    // Ground shadow disc (soft)
+    // Ground shadow disc (soft contact shadow)
     const disc = new THREE.Mesh(
-      new THREE.CircleGeometry(1.7, 48),
+      new THREE.CircleGeometry(1.8, 48),
       new THREE.MeshShadowMaterial
-        ? new THREE.MeshShadowMaterial({ opacity: 0.5 })
-        : new THREE.MeshStandardMaterial({ color: 0x000000, transparent: true, opacity: 0.45 })
+        ? new THREE.MeshShadowMaterial({ opacity: 0.55 })
+        : new THREE.MeshStandardMaterial({ color: 0x000000, transparent: true, opacity: 0.5 })
     );
     disc.rotation.x = -Math.PI / 2;
-    disc.position.y = -1.55;
+    disc.position.y = -1.5;
     disc.receiveShadow = true;
     scene.add(disc);
+
+    // soft warm ground glow ring under product
+    const glowRing = new THREE.Mesh(
+      new THREE.RingGeometry(0.7, 1.6, 48),
+      new THREE.MeshBasicMaterial({ color: 0xF5B041, transparent: true, opacity: 0.12, side: THREE.DoubleSide })
+    );
+    glowRing.rotation.x = -Math.PI / 2;
+    glowRing.position.y = -1.49;
+    scene.add(glowRing);
+    window.__glowRing = glowRing;
 
     // ---- OrbitControls ----
     if (THREE.OrbitControls) {
@@ -191,22 +199,28 @@
     );
     card.material = faceMat; // initial
 
-    // Gold frame trim
+    // Gold frame trim (slightly thicker, layered bevel)
     const frameMat = new THREE.MeshStandardMaterial({
-      color: 0xF5B041, metalness: 0.7, roughness: 0.3, emissive: 0x3a2a00, emissiveIntensity: 0.12
+      color: 0xF5B041, metalness: 0.72, roughness: 0.28, emissive: 0x3a2a00, emissiveIntensity: 0.14
     });
-    const frame = new THREE.Mesh(new THREE.BoxGeometry(1.58, 2.08, 0.04), frameMat);
-    frame.position.z = 0.02;
+    const frame = new THREE.Mesh(new THREE.BoxGeometry(1.58, 2.08, 0.05), frameMat);
+    const inner = new THREE.Mesh(new THREE.BoxGeometry(1.52, 2.02, 0.03), frameMat);
+    inner.position.z = 0.012;
     group.add(frame);
+    group.add(inner);
 
     // floating coffee beans around the product (dynamic decoration)
     const beanMat = new THREE.MeshStandardMaterial({ color: 0x6b4a2b, roughness: 0.6 });
-    for (let i = 0; i < 8; i++) {
-      const b = new THREE.Mesh(new THREE.SphereGeometry(0.09, 12, 12), beanMat);
+    for (let i = 0; i < 10; i++) {
+      const b = new THREE.Mesh(new THREE.SphereGeometry(0.085, 12, 12), beanMat);
       b.scale.set(1, 1.5, 0.7);
-      const ang = (i / 8) * Math.PI * 2;
-      b.position.set(Math.cos(ang) * (1.6 + (i % 3) * 0.3), (i % 4) * 0.5 - 0.75, Math.sin(ang) * 0.4);
-      b.userData = { phase: i * 1.2, amp: 0.12, baseY: b.position.y };
+      const ang = (i / 10) * Math.PI * 2;
+      const r = 1.35 + (i % 3) * 0.22;
+      const yp = 0.9 + Math.sin(ang * 2 + i) * 0.35;
+      b.position.set(Math.cos(ang) * r, yp, Math.sin(ang) * (0.35 + (i % 2) * 0.2));
+      b.userData = {
+        phase: i * 1.35, amp: 0.14, baseY: yp, baseR: r, baseAng: ang, speed: 0.008 + (i % 4) * 0.002
+      };
       group.add(b);
     }
 
@@ -233,8 +247,12 @@
     if (canvas) {
       canvas.style.display = 'block';
       canvas.setAttribute('data-state', 'on');
+      // fade canvas in on the next frame (smooth, no hard pop)
+      requestAnimationFrame(function () {
+        if (canvas) canvas.classList.add('is-ready');
+      });
     }
-    // hide premium PNG showcase + reveal 3D controls now that WebGL is live
+    // fade premium PNG showcase out + reveal 3D controls now that WebGL is live
     if (fallbackProduct) fallbackProduct.classList.add('is-hidden');
     if (controlsEl) controlsEl.hidden = false;
   }
@@ -270,8 +288,12 @@
     renderer.setSize(w, h, false);
     camera.aspect = w / h;
     camera.updateProjectionMatrix();
-    // center product on small screens already handled by single-column layout
-    defaultPos.x = w < 900 ? 0 : 0;
+
+    // Cinematic framing: pull camera a touch closer on narrow single-col layouts
+    const z = w < 600 ? 5.6 : (w < 900 ? 6.0 : 6.2);
+    if (camera.position.z !== z && !zoomed && !camTarget) {
+      camera.position.z = z;
+    }
   }
 
   // ---- Custom controls (Autorotate / Zoom / Reset) ----
@@ -322,14 +344,23 @@
     if (product) {
       product.position.y = Math.sin(t * 0.8) * 0.12;
     }
-    // floating beans gentle bob
+    // floating beans: gentle bob + drift orbit for a lively premium feel
     if (product) {
       product.children.forEach(function (c) {
         if (c.userData && c.userData.phase !== undefined) {
-          c.position.y = c.userData.baseY + Math.sin(t * 0.9 + c.userData.phase) * c.userData.amp;
-          c.rotation.y += 0.01;
+          var u = c.userData;
+          c.position.x = Math.cos(u.baseAng + t * u.speed) * u.baseR;
+          c.position.z = Math.sin(u.baseAng + t * u.speed) * (0.35 + (c.position.x > 0 ? 0.2 : 0));
+          c.position.y = u.baseY + Math.sin(t * 0.9 + u.phase) * u.amp;
+          c.rotation.y += 0.012;
+          c.rotation.z = Math.sin(t * 0.7 + u.phase) * 0.4;
         }
       });
+    }
+
+    // subtle pulsing ground glow
+    if (window.__glowRing) {
+      window.__glowRing.material.opacity = 0.10 + Math.abs(Math.sin(t * 0.8)) * 0.05;
     }
 
     // under-glow flicker subtle

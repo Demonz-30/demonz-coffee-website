@@ -154,12 +154,14 @@ body {
 .ctrl-chip:hover{background:var(--gold);color:#110a00}
 .ctrl-chip.is-on{background:var(--gold);color:#110a00}
 .hero-stage{position:relative;height:600px}
-/* WebGL mount slot hidden until Three.js is integrated (kept as reserved canvas) */
-.hero-canvas{position:absolute;inset:0;width:100%;height:100%;display:none;z-index:1}
+/* WebGL mount slot; fades in once the renderer is ready (no hard pop / layout shift) */
+.hero-canvas{position:absolute;inset:0;width:100%;height:100%;display:none;z-index:1;opacity:0;transition:opacity .6s ease}
+.hero-canvas.is-ready{opacity:1}
 
 /* ============ Premium PNG Product Showcase ============ */
-.fallback-product{position:absolute;inset:0;z-index:0;display:flex;align-items:center;justify-content:center}
-.fallback-product.is-hidden{display:none}
+.fallback-product{position:absolute;inset:0;z-index:0;display:flex;align-items:center;justify-content:center;transition:opacity .55s ease,visibility .55s ease}
+/* smooth fade to PNG fallback (or hides when WebGL active) - stays in layout, no shift */
+.fallback-product.is-hidden{opacity:0;visibility:hidden}
 .premium-product{position:relative;width:340px;height:430px;display:flex;align-items:center;justify-content:center;transform-style:preserve-3d}
 .pp-img{position:relative;z-index:3;width:300px;height:auto;max-height:410px;object-fit:contain;filter:drop-shadow(0 30px 45px rgba(0,0,0,.55)) drop-shadow(0 8px 20px rgba(245,176,65,.22));animation:ppFloat 6s ease-in-out infinite;will-change:transform}
 @keyframes ppFloat{0%,100%{transform:translateY(0) rotate(-1.2deg)}50%{transform:translateY(-24px) rotate(1.2deg)}}

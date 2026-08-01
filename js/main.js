@@ -334,13 +334,11 @@
     { img: 'assets/products/web/products3.webp', cat: 'branding', label: 'Suasana & Branding' },
     { img: 'assets/products/web/products4.webp', cat: 'produk', label: 'Cangkir & Aroma' },
     { img: 'assets/products/web/products8.webp', cat: 'packaging', label: 'Packing Premium' },
-    { img: 'assets/owner/web/owner1.webp', cat: 'owner', label: 'Founder Demonz Coffee' },
     { img: 'assets/products/web/products5.webp', cat: 'proses', label: 'Biji Robusta Natural' },
     { img: 'assets/products/web/products6.webp', cat: 'packaging', label: 'Kemasan Fresh Seal' },
     { img: 'assets/products/web/products7.webp', cat: 'branding', label: 'Identity & Kualitas' },
     { img: 'assets/logo/web/logo2.webp', cat: 'branding', label: 'Logo Demonz Coffee' },
-    { img: 'assets/products/web/products9.webp', cat: 'produk', label: 'Biji Petik Pilihan' },
-    { img: 'assets/owner/web/owner2.webp', cat: 'owner', label: 'Momen Bersama' }
+    { img: 'assets/products/web/products9.webp', cat: 'produk', label: 'Biji Petik Pilihan' }
   ];
 
   const masonry = document.getElementById('galleryMasonry');

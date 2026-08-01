@@ -39,6 +39,14 @@
         if (beans) {
           beans.style.transform = 'translate(' + (cx * 22) + 'px,' + (cy * 16) + 'px)';
         }
+        // premium product parallax (subtle layered depth)
+        const product = document.querySelector('[data-parallax="product"]');
+        if (product) {
+          const scale = 22;
+          // rotate slightly with cursor for a living, dimensional feel
+          product.style.transform =
+            'translate(' + (cx * scale) + 'px,' + (cy * scale) + 'px)';
+        }
       });
     }
   }

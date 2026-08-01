@@ -117,6 +117,17 @@
     });
     gsap.from('.hero-3d-controls', { opacity: 0, y: 30, duration: 0.9, delay: 2.5 });
 
+    // Premium product showcase entrance (PNG stage)
+    gsap.from('.premium-product', {
+      opacity: 0, y: 60, scale: 0.9, duration: 1.3, delay: 2.3, ease: 'power3.out'
+    });
+    // Glass stat strip reveal
+    gsap.from('#home .hero-stats', {
+      opacity: 0, y: 26, duration: 0.9, delay: 2.6, ease: 'power2.out'
+    });
+    // float-beans fade in
+    gsap.from('#home .float-beans', { opacity: 0, duration: 1.2, delay: 2.8 });
+
     // Generic reveal for [data-reveal] via ScrollTrigger (staggered per group)
     const revealables = gsap.utils.toArray('[data-reveal]');
     revealables.forEach(function (el) {

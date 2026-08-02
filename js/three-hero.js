@@ -26,7 +26,8 @@
   let product = null, envPMREM = null, clock = null, under = null;
   let autoRotate = true;
   let zoomed = false;
-  let defaultPos = { x: 0, y: 0.45, z: 6.2 }; // cinematic elevated framing
+  let lastT = 0; // previous frame time (for frame-rate-independent sway speed)
+  let defaultPos = { x: 0, y: 0.45, z: 8.0 }; // cinematic elevated framing (pulled back so the 3D product fits the hero box with a small margin)
   let started = false;
   let disposed = true;
   let reducedMotion = false;
@@ -44,6 +45,18 @@
   let particlesVel = null;       // per-particle velocity (Float32Array)
   const PARTICLE_COUNT = 70;     // tuned low -> minimal GPU cost
   let mouseNX = 0, mouseNY = 0;  // normalized -1..1 pointer position (for parallax)
+  // Intro product sweep: spin the product itself DEPAN -> BELAKANG -> DEPAN
+  // (full 360°) once after first render, then hand back to normal controls.
+  // ---- Idle behaviour (PNG-aware: never fake a full 360° spin) ----
+  // The asset is a real front + back photo on a thin pouch. A full 360° spin or
+  // a camera that circles the card just shows a flat edge-on sliver, so we keep
+  // the product alive with a gentle LEFT/RIGHT sway (±12°) plus a floating bob,
+  // and reveal the real BACK face once via a smooth eased flip at intro.
+  let introSweep = false;   // true while the one-time front<->back intro flip runs
+  let introSweepT = 0;      // 0..1 eased progress of the intro flip
+  const SWAY_AMP   = 0.21;  // ±0.21 rad ≈ ±12° amp of the idle sway
+  const SWAY_SPEED = 0.5;   // radians of phase per second (gentle, ~0.5 rad/s)
+  let swayPhase = 0;        // running phase accumulator for the sway (frame-independent)
 
   // Feature-detect reduced motion once.
   if (window.matchMedia) {
@@ -67,7 +80,10 @@
 
   function buildPmremEnvironment() {
     // Procedural "Room" environment for reflections (no external HDR needed).
-    const geo = new window.THREE.RoomEnvironment ? null : new window.THREE.BoxGeometry(1, 1, 1);
+    // NOTE: RoomEnvironment only exists in three r132+. In r128 (this build) it's
+    // undefined, so we fall back to a lightweight gradient dome. We must test the
+    // constructor REFERENCE, never `new RoomEnvironment` here (that would throw).
+    const geo = window.THREE.RoomEnvironment ? null : new window.THREE.BoxGeometry(1, 1, 1);
     // Re-implement a tiny gradient environment so MeshStandardMaterial has envMap.
     const sceneEnv = new window.THREE.Scene();
     const pmrem = new window.THREE.PMREMGenerator(renderer);
@@ -147,11 +163,14 @@
 
     // ---- Product (PNG surface, double-sided so it never looks blank) ----
     product = buildProduct();
+    scene.add(product); // FIXED: product was built but never added to the scene!
 
     // Ground shadow disc (soft contact shadow)
     const disc = new THREE.Mesh(
       new THREE.CircleGeometry(1.8, 48),
-      new THREE.MeshShadowMaterial
+      // MeshShadowMaterial is r132+ only; test the constructor REFERENCE (never
+      // `new MeshShadowMaterial` in the condition) so we cleanly fall back for r128.
+      THREE.MeshShadowMaterial
         ? new THREE.MeshShadowMaterial({ opacity: 0.55 })
         : new THREE.MeshStandardMaterial({ color: 0x000000, transparent: true, opacity: 0.5 })
     );
@@ -213,25 +232,33 @@
       controls.maxDistance = 12;
       controls.enablePan = false;
       controls.enableRotate = true;
-      controls.autoRotate = autoRotate;
+      controls.autoRotate = false;      // camera stays still by default: the product's own eased sway (/±12°) brings it to life
       controls.autoRotateSpeed = 0.9;
       controls.target.set(0, 0, 0);
 
-      // Pause auto-rotate the moment the user grabs the product, resume after idle.
+      // Pause auto-rotate the moment the user grabs the product.
       controls.addEventListener('start', function () {
         interacting = true;
+        // if the user grabs during the intro flip, hand control over cleanly by
+        // keeping the rotation at its current eased position (no snapping).
+        if (introSweep) {
+          var eCur = easeInOutSine(introSweepT);
+          introSweep = false;
+          product.rotation.y = Math.sin(eCur * Math.PI) * Math.PI;
+        }
         if (idleTimer) { clearTimeout(idleTimer); idleTimer = null; }
         if (controls) controls.autoRotate = false;
       });
       controls.addEventListener('end', function () {
         interacting = false;
         if (idleTimer) clearTimeout(idleTimer);
-        if (reducedMotion) return; // never force auto-rotate for reduced-motion users
+        // Resume the gentle idle sway automatically (animate() sees interacting=false
+        // and eases the card back into its slow ±12° sway). No full camera 360-spin
+        // here — that reminds the flattened look of a PNG, so we leave the camera still.
+        if (reducedMotion) return;
         idleTimer = setTimeout(function () {
           idleTimer = null;
-          if (controls && autoRotate && !zoomed && !camTarget) {
-            controls.autoRotate = true;
-          }
+          swayPhase = 0; // restart sway phase on a soft note after a pause
         }, AUTO_IDLE_MS);
       });
     }
@@ -322,65 +349,81 @@
 
     // Load product PNG via TextureLoader. If it fails (offline/blocked), we
     // still build a styled gold surface so the viewer is never blank.
-    let geo, mat;
+    // The product has real thickness + a branded BACK panel so a full 360°
+    // spin (DEPAN -> BELAKANG) looks solid from every angle.
+    let mat, bodyMat, backMat, faceMat;
     mat = new THREE.MeshStandardMaterial({
       color: 0x181818,
       metalness: 0.4,
       roughness: 0.35,
       transparent: true
     });
-    geo = new THREE.BoxGeometry(1.5, 2.0, 0.16);
-
-    const card = new THREE.Mesh(geo, mat);
-    card.castShadow = true;
-    card.receiveShadow = true;
-
-    // Front & back face with PNG product texture (double-sided preview)
-    const faceMat = new THREE.MeshStandardMaterial({
+    // side / rim of the product (thickness)
+    bodyMat = new THREE.MeshStandardMaterial({
+      color: 0x4a331f, metalness: 0.55, roughness: 0.42
+    });
+    // branded back panel (premium dark gold) — visible when spun to the back.
+    backMat = new THREE.MeshBasicMaterial({
       map: null,
       color: 0xffffff,
-      metalness: 0.2,
-      roughness: 0.45,
-      transparent: true
+      transparent: true,
+      depthWrite: false,
+      side: THREE.DoubleSide
     });
+    backMat.toneMapped = false;
+    // front face = product PNG (MeshBasicMaterial: shows the photo as-is, never
+    // darkened by scene lighting/environment). transparent so the remove-bg PNG
+    // floats cleanly instead of showing as a solid black rectangle.
+    faceMat = new THREE.MeshBasicMaterial({
+      map: null,
+      color: 0xffffff,
+      transparent: true,
+      depthWrite: false,
+      side: THREE.DoubleSide
+    });
+    faceMat.toneMapped = false;
+    // Produk = foto PNG transparan (portrait 407x613), ditampilkan DIAM / statis.
+    // Tidak ada animasi & tidak ada buku/kotak — hanya foto mengambang.
+    // DoubleSide agar terlihat dari depan; transparent untuk PNG tanpa latar.
+    faceMat.transparent = true;     // PNG dengan latar transparan (remove-bg)
+    var card = new THREE.Mesh(
+      new THREE.PlaneGeometry(3.0, 4.52),
+      faceMat
+    );
+    card.castShadow = false;
+
     const texLoader = new THREE.TextureLoader();
     texLoader.setCrossOrigin('anonymous');
-    texLoader.load(
-      'assets/products/web/products2.webp',
-      function (tex) {
-        tex.encoding = THREE.sRGBEncoding;
-        faceMat.map = tex;
-        faceMat.needsUpdate = true;
-        card.material = faceMat;
-      },
-      undefined,
-      function () {
-        // texture failed -> keep gold plate (never blank)
-        card.material = mat;
-      }
-    );
-    card.material = faceMat; // initial
 
-    // Gold frame trim (layered bevel: outer rim -> inner face -> soft glow edge)
-    const frameMat = new THREE.MeshStandardMaterial({
-      color: 0xF5B041, metalness: 0.72, roughness: 0.28, emissive: 0x3a2a00, emissiveIntensity: 0.14
+    // --- Inline-base64 photo source (works over file:// too) ---
+    // Browser blocks cross-origin texture loads on the file:// protocol, which is
+    // why plain path loads appear blank when the page is opened by double-click.
+    // When js/hero-data.js is loaded it provides HERO_FRONT_DATA / HERO_BACK_DATA
+    // (data:image/jpeg;base64,...) so we can feed the photo straight in with no
+    // network request at all.
+    function photoSrc(kind) {
+      if (kind === 'front' && window.HERO_FRONT_DATA) return window.HERO_FRONT_DATA;
+      if (kind === 'back' && window.HERO_BACK_DATA) return window.HERO_BACK_DATA;
+      return kind === 'front'
+        ? 'assets/products/web/hero-front.png'
+        : 'assets/products/web/hero-back.png';
+    }
+    // data: URIs must go through a plain loader (no crossOrigin) to avoid tainting.
+    function loadPhoto(kind, apply) {
+      var src = photoSrc(kind);
+      var loader = (src.indexOf('data:') === 0) ? new THREE.TextureLoader() : texLoader;
+      loader.load(src, apply);
+    }
+
+    // ---- Foto produk dari folder /animasi (foto yang sama, disebar DoubleSide) ----
+    loadPhoto('front', function (tex) {
+      faceMat.map = tex;
+      faceMat.needsUpdate = true;
+      card.material.needsUpdate = true;
     });
-    const rimBright = new THREE.MeshStandardMaterial({
-      color: 0xFFE39B, metalness: 0.85, roughness: 0.2, emissive: 0x5a3f00, emissiveIntensity: 0.22
-    });
-    const frame = new THREE.Mesh(new THREE.BoxGeometry(1.58, 2.08, 0.05), frameMat);
-    const inner = new THREE.Mesh(new THREE.BoxGeometry(1.52, 2.02, 0.045), rimBright);
-    inner.position.z = 0.016;
-    // subtle gold glow edge trapped between frame and face (premium halo)
-    const glowEdge = new THREE.Mesh(
-      new THREE.BoxGeometry(1.5, 2.0, 0.02),
-      new THREE.MeshBasicMaterial({ color: 0xF5B041, transparent: true, opacity: 0.16 })
-    );
-    glowEdge.position.z = 0.01;
-    glowEdge.renderOrder = -1;
-    group.add(frame);
-    group.add(inner);
-    group.add(glowEdge);
+
+    // (Removed: gold border/frame removed so the product shows as a clean
+    // floating product photo instead of a framed "book" block.)
 
     // floating coffee beans around the product (dynamic decoration)
     const beanMat = new THREE.MeshStandardMaterial({ color: 0x6b4a2b, roughness: 0.6 });
@@ -408,65 +451,13 @@
       init();
       started = true;
       disposed = false;
-      // Try to upgrade to an actual 3D model ONLY if a .glb file is available.
-      // If not (current state), the PNG product card remains — fully non-blocking.
-      tryLoadGLB();
       showCanvas();
       animate();
     } catch (e) {
       // WebGL init failed -> keep PNG fallback
+      console.warn('[Three] WebGL init failed, using PNG fallback:', e && e.message, e);
       fallbackToPng();
     }
-  }
-
-  // Optional GLB upgrade. Guesses a matching .glb for the product image. If none
-  // exists or the loader is unavailable, it silently keeps the PNG product card.
-  function tryLoadGLB() {
-    const THREE = window.THREE;
-    if (!product || !THREE || typeof THREE.GLTFLoader !== 'function') return;
-    const loader = new THREE.GLTFLoader();
-    const candidates = [
-      'assets/products/web/products2.glb',
-      'assets/products/products.glb',
-      'assets/products/web/product.glb'
-    ];
-    // probe each candidate; first that loads wins
-    let tried = 0;
-    function probe(url) {
-      loader.load(
-        url,
-        function (gltf) {
-          // swap decorated PNG card for the real model, keep existing lighting
-          const model = gltf.scene || (gltf.scenes && gltf.scenes[0]);
-          if (!model) return;
-          model.position.y = -0.7; // seat model onto the same platform
-          model.traverse(function (o) {
-            if (o.isMesh) {
-              o.castShadow = true;
-              o.receiveShadow = true;
-            }
-          });
-          product.add(model);
-          // hide the placeholder card + beans + frame (model replaces them visually)
-          product.children.forEach(function (c) {
-            if (c !== model) c.visible = false;
-          });
-          product.userData.isModel = true;
-        },
-        undefined,
-        function () {
-          attempted(url); // 404 / load error -> move on
-        }
-      );
-    }
-    function attempted() {
-      tried++;
-      if (tried < candidates.length) {
-        // try next candidate synchronously (loader is async; short delay is fine)
-        setTimeout(function () { probe(candidates[tried]); }, 20);
-      }
-    }
-    probe(candidates[0]);
   }
 
   function showCanvas() {
@@ -492,6 +483,11 @@
   }
 
   // ---- Lazy load: only start when hero is near viewport ----
+  // NOTE: we observe the hero stage (which always has a real layout box) instead
+  // of the canvas itself. The canvas is display:none until WebGL boots, and an
+  // IntersectionObserver treats display:none elements as never-intersecting, so
+  // observing the canvas would create a deadlock (canvas never wakes, Three.js
+  // never starts). Observing the visible stage fixes that without giving up lazy-load.
   if ('IntersectionObserver' in window) {
     const io = new IntersectionObserver(function (entries) {
       entries.forEach(function (e) {
@@ -501,7 +497,7 @@
         }
       });
     }, { rootMargin: '200px' });
-    io.observe(canvas);
+    io.observe(stage || canvas);
   } else {
     if (window.requestIdleCallback) window.requestIdleCallback(startIfNeeded, { timeout: 800 });
     else setTimeout(startIfNeeded, 200);
@@ -571,11 +567,14 @@
     if (!controls || !camera) return;
     zoomed = false;
     controls.minDistance = 4.2;
-    // don't force auto-rotate back on for users who prefer reduced motion
-    autoRotate = reducedMotion ? false : true;
     if (idleTimer) { clearTimeout(idleTimer); idleTimer = null; }
-    controls.autoRotate = autoRotate && !interacting;
-    document.body.setAttribute('data-autorotate', autoRotate ? '1' : '0');
+    // Reset to the still camera + gentle product sway (never force a fake camera
+    // 360-spin over a PNG). Keep the manual Autorotate toggle available if the
+    // user explicitly asks for a camera spin.
+    controls.autoRotate = false;
+    document.body.setAttribute('data-autorotate', '0');
+    autoRotate = reducedMotion ? false : false;
+    swayPhase = 0;
     animateCameraTo(defaultPos.x, defaultPos.y, defaultPos.z);
     if (product) product.rotation.set(0, 0, 0);
   };
@@ -586,6 +585,11 @@
   }
 
   bobAmp = reducedMotion ? 0.03 : 0.12;
+
+  // Smooth eased interpolation 0..1 -> ease-in-out sine (soft start/end, no snapping).
+  function easeInOutSine(t) {
+    return -(Math.cos(Math.PI * t) - 1) / 2;
+  }
 
   function hideLoader() {
     const loaderEl = document.getElementById('heroLoader');
@@ -599,6 +603,9 @@
     requestAnimationFrame(animate);
     if (!clock || !renderer || !scene || !camera) return;
     var t = clock.getElapsedTime();
+    var dt = (lastT ? (t - lastT) : 0.016); // frame-rate independent delta (fallback ~60fps)
+    dt = Math.min(dt, 0.1);                  // clamp big jumps (tab in/out) to avoid yank
+    lastT = t;
 
     // smooth camera move for zoom/reset
     if (camTarget && controls) {
@@ -606,18 +613,11 @@
       if (camera.position.distanceTo(camTarget) < 0.05) camTarget = null;
     }
 
-    // gentle hover (calmer when reduced-motion is requested)
-    // Natural idle animation: layered gentle bob + slow rotation sway (feels organic,
-    // not a rigid sine). Reduced-motion collapses to a near-static calm float.
+    // Produk statis: TIDAK ada animasi three.js (no bob / no breath / no rotation,
+    // no pointer lean). Produk selalu menghadap depan dengan rotasi nol.
     if (product) {
-      const idle = reducedMotion ? 0.35 : 1;
-      const hover = Math.sin(t * 0.8) * bobAmp * idle;
-      const breathe = Math.sin(t * 0.5 + 1.2) * 0.018 * idle;
-      product.position.y = hover;
-      product.rotation.x = breathe;
-      // slow sway toward the pointer (gentle pointer-aware lean)
-      const targetLean = reducedMotion ? 0 : mouseNX * 0.08;
-      product.rotation.z += (targetLean - product.rotation.z) * 0.02;
+      product.position.y = 0;
+      product.rotation.set(0, 0, 0);
     }
 
     // floating beans: gentle bob + drift orbit for a lively premium feel.
@@ -685,6 +685,17 @@
     if (!firstFrameDone) {
       firstFrameDone = true;
       hideLoader();
+      // Start a one-time, eased front (0°) -> back (180°) -> front (0°) intro
+      // flip so the real BACK photo is revealed naturally. We purposely do NOT
+      // spin the camera -360° (that flattened a PNG and looked fake); after the
+      // flip the product settles into a gentle ±12° sway. Camera stays still.
+      if (!reducedMotion && product && !product.userData.isModel) {
+        introSweep = true;
+        introSweepT = 0;
+        swayPhase = 0;
+        product.rotation.y = 0;
+        if (controls) controls.autoRotate = false;
+      }
     }
   }
 

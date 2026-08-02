@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Demonz Coffee — Premium Robusta Lampung | Cita Rasa Khas Indonesia</title>
-  <meta name="description" content="Demonz Coffee menghadirkan kopi Robusta Lampung premium dengan cita rasa autentik khas Indonesia. Natural Process, Medium Roast. Pesan via Shopee & WhatsApp. Pengiriman cepat & packing premium." />
+  <title>Tentang Kami — Demonz Coffee - Premium Robusta Lampung</title>
+  <meta name="description" content="Kenali cerita di balik Demonz Coffee, visi dan misi, serta skills founder Muhammad Munir Alfaruq. Kopi Robusta Lampung premium dengan cita rasa khas Indonesia." />
   <meta name="keywords" content="Demonz Coffee, kopi Lampung, robusta lampung, kopi premium, kopi asli indonesia, natural process, medium roast, kopi robusta, kopi lokal indonesia" />
   <meta name="author" content="Demonz Coffee" />
   <meta name="robots" content="index, follow" />
@@ -16,19 +16,19 @@
   <meta name="application-name" content="Demonz Coffee" />
 
   <!-- Canonical -->
-  <link rel="canonical" href="https://demonzcoffee.id/" />
+  <link rel="canonical" href="https://demonzcoffee.id/about.html" />
 
   <!-- ======= SEO Open Graph (absolute URLs) ======= -->
   <meta property="og:type" content="website" />
   <meta property="og:site_name" content="Demonz Coffee" />
   <meta property="og:locale" content="id_ID" />
-  <meta property="og:title" content="Demonz Coffee — POWER IN EVERY SIP | Premium Robusta Lampung" />
-  <meta property="og:description" content="Kopi Robusta Lampung berkualitas premium yang menghadirkan cita rasa autentik dalam setiap tegukan." />
+  <meta property="og:title" content="Tentang Kami — Demonz Coffee - Premium Robusta Lampung" />
+  <meta property="og:description" content="Cerita di balik Demonz Coffee, visi, misi, dan skills founder." />
   <meta property="og:image" content="https://demonzcoffee.id/assets/logo/web/logo2.webp" />
   <meta property="og:image:width" content="600" />
   <meta property="og:image:height" content="600" />
   <meta property="og:image:alt" content="Logo Demonz Coffee" />
-  <meta property="og:url" content="https://demonzcoffee.id/" />
+  <meta property="og:url" content="https://demonzcoffee.id/about.html" />
 
   <!-- ======= Twitter Card ======= -->
   <meta name="twitter:card" content="summary_large_image" />
@@ -96,6 +96,10 @@
   <link rel="stylesheet" href="vendor/css/swiper-bundle.min.css" />
   <link rel="stylesheet" href="css/fonts.css" />
   <link rel="stylesheet" href="css/style.min.css" />
+  <style>
+    /* about.html: beri jarak atas karena tidak ada hero (navbar fixed punya bg) */
+    #about.about-sec{padding-top:170px}
+  </style>
 </head>
 
 <body class="bg-[#0B0B0B] text-white font-body overflow-x-hidden antialiased">
@@ -120,15 +124,15 @@
   <!-- ============ NAVBAR ============ -->
   <header id="siteNav" class="site-nav">
     <nav class="nav-inner">
-      <a href="#home" class="brand" aria-label="Demonz Coffee - Beranda">
+      <a href="index.html" class="brand" aria-label="Demonz Coffee - Beranda">
         <img src="assets/logo/web/logo2.webp" alt="Logo Demonz Coffee" width="44" height="44" loading="eager" />
         <span class="brand-name">DEMONZ <em>Coffee</em></span>
       </a>
 
       <ul class="nav-links" id="navLinks">
-        <li><a href="#home" class="nav-link is-active">Home</a></li>
-        <li><a href="about.html" class="nav-link">Tentang</a></li>
-        <li><a href="produk.html#produk" class="nav-link">Produk</a></li>
+        <li><a href="index.html" class="nav-link">Home</a></li>
+        <li><a href="about.html#about" class="nav-link is-active" aria-current="page">Tentang</a></li>
+        <li><a href="index.html#produk" class="nav-link">Produk</a></li>
         <li><a href="galeri.html" class="nav-link">Galeri</a></li>
         <li><a href="kontak.html" class="nav-link">Kontak</a></li>
       </ul>
@@ -146,9 +150,9 @@
       <button type="button" class="mobile-menu-close" data-close-menu aria-label="Tutup menu">
         <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18M6 6l12 12"/></svg>
       </button>
-      <a href="#home">Home</a>
-      <a href="about.html">Tentang</a>
-      <a href="produk.html#produk">Produk</a>
+      <a href="index.html">Home</a>
+      <a href="about.html#about">Tentang</a>
+      <a href="index.html#produk">Produk</a>
       <a href="galeri.html">Galeri</a>
       <a href="kontak.html">Kontak</a>
       <button type="button" class="btn-primary" data-order-picker>Pesan Sekarang</button>
@@ -156,159 +160,155 @@
   </header>
 <!--@@HERO@@-->
   <main>
-    <!-- ============ PAGE 1: HERO ============ -->
-    <section id="home" class="hero section">
-      <!-- Cinematic background (parallax) -->
-      <div class="hero-bg" id="heroBg" aria-hidden="true">
-        <img src="assets/products/web/products3.webp" alt="" class="hero-bg-img" width="900" height="506" fetchpriority="high" />
-        <div class="hero-overlay"></div>
-      </div>
-
-      <!-- Falling dust / embers (CSS) -->
-      <div class="embr" aria-hidden="true" id="embrLayer">
-        <i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i>
-      </div>
-
-      <!-- Steam wisps (CSS) -->
-      <div class="hero-steam" aria-hidden="true"><i></i><i></i><i></i></div>
-
-      <div class="hero-layout">
-        <!-- LEFT: headline -->
-        <div class="hero-copy">
-          <p class="hero-kicker"><span class="kicker-line"></span> <span class="kicker-txt">100% Robusta Lampung</span></p>
-          <h1 class="hero-title">
-            <span class="hero-line">POWER IN</span>
-            <span class="hero-line gold">EVERY <em class="accent">SIP</em></span>
-          </h1>
-          <p class="hero-sub">Kopi Robusta Lampung berkualitas premium yang menghadirkan cita rasa autentik dalam setiap tegukan.</p>
-          <div class="hero-actions">
-            <a href="produk.html#produk" class="btn-outline shine" data-magnetic><span>Jelajahi Produk</span></a>
-            <button type="button" class="btn-primary shine" data-magnetic data-order-picker><span>Pesan Sekarang</span></button>
-          </div>
-
-          <!-- Premium highlight stats (glass) -->
-          <div class="hero-stats glass" data-reveal>
-            <div class="hs-item">
-              <span class="hs-ico"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2 4 6v6c0 5 3.5 8 8 10 4.5-2 8-5 8-10V6Z"/><circle cx="12" cy="11" r="3"/></svg></span>
-              <span class="hs-body"><b data-count="100" data-suffix="%">100%</b><small>Robusta Asli</small></span>
-            </div>
-            <span class="hs-sep"></span>
-            <div class="hs-item">
-              <span class="hs-ico"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 5h18M4 5h16v10a4 4 0 0 1-4 4H8a4 4 0 0 1-4-4Z"/><path d="M3 5v14M3 12h18M12 5v14"/></svg></span>
-              <span class="hs-body"><b data-count="250" data-prefix="±">±250g</b><small>Netto Premium</small></span>
-            </div>
-            <span class="hs-sep"></span>
-            <div class="hs-item">
-              <span class="hs-ico"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 2.5v6l4 2"/></svg></span>
-              <span class="hs-body"><b>Medium</b><small>Roast Khas</small></span>
-            </div>
-            <span class="hs-sep"></span>
-            <div class="hs-item">
-              <span class="hs-ico"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 17.5c3.5-2 6-3.5 6-7A6 6 0 1 0 6 10.5c0 3.5 2.5 5 6 7Z"/><path d="M12 6a4.5 4.5 0 0 0-1 8.9"/></svg></span>
-              <span class="hs-body"><b data-count="4.9" data-decimals="1">4.9</b><small>Rating Pelanggan</small></span>
-            </div>
-          </div>
-
-          <!-- 3D integration slot (Three.js next milestone) -->
-          <div class="hero-3d-controls" id="heroControls" hidden>
-            <span class="controls-hint">Seret produk untuk melihat 360°</span>
-            <div class="controls-row">
-              <button type="button" class="ctrl-chip" data-rotate aria-label="Putar otomatis"><span>Autorotate</span></button>
-              <button type="button" class="ctrl-chip" data-zoom aria-label="Zoom"><span>Zoom</span></button>
-              <button type="button" class="ctrl-chip" data-reset aria-label="Reset kamera"><span>Reset</span></button>
-            </div>
-          </div>
-        </div>
-
-        <!-- RIGHT: premium product stage (PNG showcase) -->
-        <div class="hero-stage" id="heroStage">
-          <!-- WebGL mount slot (reserved for Three.js next milestone) -->
-          <canvas id="hero-canvas" class="hero-canvas" aria-hidden="true" tabindex="-1"></canvas>
-
-          <!-- Loading veil (hidden: three.js removed, fallback product shows directly) -->
-          <div class="hero-loader is-done" id="heroLoader" aria-hidden="true"><i></i></div>
-
-          <!-- Premium floating PNG product showcase -->
-          <div class="fallback-product" id="fallbackProduct" aria-hidden="false">
-            <div class="premium-product" data-parallax="product">
-              <div class="pp-orbit"><i></i><i></i></div>
-              <div class="pp-ring"></div>
-              <div class="pp-aura"></div>
-              <img src="assets/products/web/hero-photo-latest.png" alt="Kopi Robusta Lampung premium" class="pp-img" loading="eager" fetchpriority="high" />
-              <div class="pp-reflection"></div>
-            </div>
-            <div class="pp-glow"></div>
-            <div class="pp-surface"></div>
-            <div class="pp-shadow"></div>
-          </div>
-
-          <!-- floating beans overlay (CSS) -->
-          <div class="float-beans" aria-hidden="true">
-            <span class="bean b1"></span><span class="bean b2"></span><span class="bean b3"></span><span class="bean b4"></span>
-          </div>
-        </div>
-      </div>
-
-      <!-- scroll indicator -->
-      <a href="about.html#about" class="scroll-hint" aria-label="Gulir ke bawah">
-        <span class="scroll-text">Scroll</span>
-        <span class="scroll-wheel"></span>
-      </a>
-    </section>
 <!--@@ABOUT@@-->
-
-    <!-- ============ KENAPA HARUS KAMI ============ -->
-    <section id="why" class="section why-sec">
+    <!-- ============ PAGE 2: ABOUT ============ -->
+    <section id="about" class="section about-sec">
       <div class="container">
         <div class="sec-head">
-          <span class="eyebrow" data-reveal>Keunggulan Kami</span>
-          <h2 class="sec-title" data-reveal>Kenapa Harus <em>Kami?</em></h2>
+          <span class="eyebrow" data-reveal>Tentang Kami</span>
+          <h2 class="sec-title" data-reveal>Tentang <em>Demonz</em></h2>
           <span class="sec-rule" data-reveal></span>
         </div>
 
-        <div class="why-grid">
-          <div class="why-card glass" data-reveal>
-            <span class="why-ic"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2 3 7v10l9 5 9-5V7Z"/><path d="M3 7l9 5 9-5"/><path d="M12 12v10"/></svg></span>
-            <h3 class="why-title">Kopi Pilihan Terbaik</h3>
-            <p class="why-text">Biji Robusta Lampung pilihan dengan proses Natural Process dan Medium Roast untuk cita rasa autentik.</p>
-          </div>
-          <div class="why-card glass" data-reveal>
-            <span class="why-ic"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 7l9-4 9 4-9 4-9-4Z"/><path d="M3 7v10l9 4 9-4V7"/><path d="M12 11v10"/></svg></span>
-            <h3 class="why-title">Packing Premium</h3>
-            <p class="why-text">Kemasan rapi dan food-grade yang menjaga kesegaran serta aroma biji kopi tetap prima.</p>
-          </div>
-          <div class="why-card glass" data-reveal>
-            <span class="why-ic"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg></span>
-            <h3 class="why-title">Pengiriman Cepat</h3>
-            <p class="why-text">Pesanan diolah dan dikirim dengan cepat ke seluruh Indonesia via Shopee &amp; kurir terpercaya.</p>
-          </div>
-          <div class="why-card glass" data-reveal>
-            <span class="why-ic"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></span>
-            <h3 class="why-title">Dukung Petani Lokal</h3>
-            <p class="why-text">Kami mendukung petani kopi lokal Indonesia dengan praktik yang adil dan berkelanjutan.</p>
+        <div class="about-grid">
+          <!-- LEFT: owner photo + visi & misi + tech stack + kopi quote -->
+          <div class="about-left">
+            <!-- Owner photo + judul cerita Demonz (image kiri, title kanan) -->
+            <div class="owner-visual" data-tilt-reveal>
+              <div class="owner-frame">
+                <img src="assets/owner/web/owner2.webp" alt="Muhammad Munir Alfaruq — Founder Demonz Coffee" width="560" height="700" loading="lazy" />
+                <div class="owner-shine"></div>
+                <div class="owner-card">
+                  <p class="owner-name">Muhammad Munir Alfaruq</p>
+                  <p class="owner-role">Founder Demonz Coffee</p>
+                </div>
+              </div>
+              <div class="owner-lead">
+                <p class="lead" data-reveal>
+                  Nama <strong class="gold-txt">"Demonz"</strong> berasal dari julukan yang saya dapatkan ketika bermain
+                  <strong>Call of Duty Mobile</strong> sebagai pengguna sniper.
+                </p>
+                <p class="body-copy" data-reveal>
+                  Julukan tersebut kemudian berkembang menjadi identitas pribadi dan menjadi fondasi lahirnya
+                  <strong class="gold-txt">Demonz Coffee</strong>, sebuah brand yang membawa semangat ketelitian,
+                  konsistensi, dan kualitas dalam setiap produk.
+                </p>
+
+                <!-- Horizontal timeline -->
+                <div class="timeline-h" data-reveal>
+                  <div class="tli is-current">
+                    <span class="tli-node"><i></i></span>
+                    <p class="tli-label">COD Mobile</p>
+                  </div>
+                  <span class="tli-arrow"></span>
+                  <div class="tli">
+                    <span class="tli-node"><i></i></span>
+                    <p class="tli-label">Demonz</p>
+                  </div>
+                  <span class="tli-arrow"></span>
+                  <div class="tli">
+                    <span class="tli-node"><i></i></span>
+                    <p class="tli-label">Belajar Digital</p>
+                  </div>
+                  <span class="tli-arrow"></span>
+                  <div class="tli">
+                    <span class="tli-node"><i></i></span>
+                    <p class="tli-label">Membangun Brand</p>
+                  </div>
+                  <span class="tli-arrow"></span>
+                  <div class="tli is-current">
+                    <span class="tli-node"><i></i></span>
+                    <p class="tli-label">Demonz Coffee</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Visi & Misi (terpisah dari judul section, di bawah foto) -->
+            <div class="vm-block" data-reveal>
+              <div class="sub-tagline">
+                <span class="sub-bar"></span>
+                <span class="sub-title">Visi &amp; Misi Kami</span>
+              </div>
+              <div class="vm-grid">
+                <div class="vm-item">
+                  <h4 class="vm-head"><span class="vm-ic">⌖</span>Visi</h4>
+                  <p class="vm-text">Menjadikan Demonz Coffee sebagai brand kopi lokal Indonesia yang dikenal melalui kualitas, inovasi, dan pengalaman terbaik bagi setiap pelanggan.</p>
+                </div>
+                <div class="vm-item">
+                  <h4 class="vm-head"><span class="vm-ic">✦</span>Misi</h4>
+                  <ul class="vm-list">
+                    <li>Menyajikan biji kopi pilihan yang segar dan berkualitas tinggi.</li>
+                    <li>Mendukung petani kopi lokal dengan praktik yang adil.</li>
+                    <li>Menghadirkan pengalaman menikmati kopi yang berkesan.</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+            <!-- Skills / Tech Stack (dengan persentase) -->
+            <div class="stack-block" data-reveal>
+              <h3 class="stack-title">Skills Seorang <em>Demonz</em></h3>
+              <div class="skill-bars">
+                <div class="skill-bar">
+                  <div class="skill-bar-head"><span class="skill-name">Graphic Design</span><span class="skill-proc">90%</span></div>
+                  <div class="skill-track"><span class="skill-fill" style="--w:90%"></span></div>
+                </div>
+                <div class="skill-bar">
+                  <div class="skill-bar-head"><span class="skill-name">Branding &amp; Visual Identity</span><span class="skill-proc">88%</span></div>
+                  <div class="skill-track"><span class="skill-fill" style="--w:88%"></span></div>
+                </div>
+                <div class="skill-bar">
+                  <div class="skill-bar-head"><span class="skill-name">Product Photography</span><span class="skill-proc">85%</span></div>
+                  <div class="skill-track"><span class="skill-fill" style="--w:85%"></span></div>
+                </div>
+                <div class="skill-bar">
+                  <div class="skill-bar-head"><span class="skill-name">Video Editing &amp; Motion Content</span><span class="skill-proc">82%</span></div>
+                  <div class="skill-track"><span class="skill-fill" style="--w:82%"></span></div>
+                </div>
+                <div class="skill-bar">
+                  <div class="skill-bar-head"><span class="skill-name">Front-End Web Development</span><span class="skill-proc">85%</span></div>
+                  <div class="skill-track"><span class="skill-fill" style="--w:85%"></span></div>
+                </div>
+                <div class="skill-bar">
+                  <div class="skill-bar-head"><span class="skill-name">HTML, CSS &amp; JavaScript</span><span class="skill-proc">90%</span></div>
+                  <div class="skill-track"><span class="skill-fill" style="--w:90%"></span></div>
+                </div>
+                <div class="skill-bar">
+                  <div class="skill-bar-head"><span class="skill-name">AI Prompt Engineering</span><span class="skill-proc">80%</span></div>
+                  <div class="skill-track"><span class="skill-fill" style="--w:80%"></span></div>
+                </div>
+                <div class="skill-bar">
+                  <div class="skill-bar-head"><span class="skill-name">UI/UX Design</span><span class="skill-proc">86%</span></div>
+                  <div class="skill-track"><span class="skill-fill" style="--w:86%"></span></div>
+                </div>
+                <div class="skill-bar">
+                  <div class="skill-bar-head"><span class="skill-name">Digital Marketing</span><span class="skill-proc">75%</span></div>
+                  <div class="skill-track"><span class="skill-fill" style="--w:75%"></span></div>
+                </div>
+                <div class="skill-bar">
+                  <div class="skill-bar-head"><span class="skill-name">Web 3 Builder</span><span class="skill-proc">72%</span></div>
+                  <div class="skill-track"><span class="skill-fill" style="--w:72%"></span></div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Quote singkat tentang kenikmatan kopi -->
+            <div class="coffee-quote" data-reveal>
+              <p class="cq-text">"Setiap cangkir Demonz bukan sekadar kopi, melainkan momen kehangatan, ketenangan, dan kenikmatan yang tulus untuk mengawali harimu."</p>
+            </div>
           </div>
         </div>
       </div>
     </section>
-<!--@@PRODUK@@-->
-<!--@@GALERI@@-->
-
-<!--@@KONTAK@@-->
   </main>
-  <!-- Quote kopi sebelum footer -->
-  <div class="container quote-banner">
-    <div class="coffee-quote" data-reveal>
-      <p class="cq-text">"Setiap cangkir Demonz bukan sekadar kopi, melainkan momen kehangatan, ketenangan, dan kenikmatan yang tulus untuk mengawali harimu."</p>
-    </div>
-  </div>
-
 
   <!-- ============ FOOTER ============ -->
   <footer class="site-footer">
     <div class="container">
       <div class="footer-grid">
         <div class="footer-brand">
-          <a href="#home" class="brand">
+          <a href="index.html" class="brand">
             <img src="assets/logo/web/logo2.webp" alt="Demonz Coffee" width="44" height="44" loading="lazy" />
             <span class="brand-name">DEMONZ <em>Coffee</em></span>
           </a>
@@ -318,9 +318,9 @@
         <div class="footer-col">
           <h4>Quick Links</h4>
           <ul>
-            <li><a href="#home">Home</a></li>
-            <li><a href="about.html">Tentang</a></li>
-            <li><a href="produk.html#produk">Produk</a></li>
+            <li><a href="index.html">Home</a></li>
+            <li><a href="about.html#about">Tentang</a></li>
+            <li><a href="index.html#produk">Produk</a></li>
             <li><a href="galeri.html">Galeri</a></li>
             <li><a href="kontak.html">Kontak</a></li>
           </ul>
@@ -441,7 +441,7 @@
       <div class="product-picker-foot">
         <p class="ppf-text">tidak ada produk yang dicari?</p>
         <p class="ppf-sub">coba cari di daftar produk</p>
-        <a href="produk.html#produk" class="btn-primary" data-close-picker>Daftar Produk</a>
+        <a href="index.html#produk" class="btn-primary" data-close-picker>Daftar Produk</a>
       </div>
     </div>
   </div>

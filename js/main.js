@@ -44,9 +44,6 @@
 
     if (navbar) {
       if (sc > 60) navbar.classList.add('scrolled'); else navbar.classList.remove('scrolled');
-      // hide navbar when scrolling down past the hero, show again when scrolling up
-      if (sc > 200 && sc > lastScrollY) navbar.classList.add('nav-hidden');
-      else navbar.classList.remove('nav-hidden');
     }
     if (backTop) {
       if (sc > 400) backTop.classList.add('show'); else backTop.classList.remove('show');
@@ -106,6 +103,10 @@
   if (mobileMenu) {
     mobileMenu.querySelectorAll('a').forEach(function (a) {
       a.addEventListener('click', function () { toggleMenu(true); });
+    });
+    // tombol close menu
+    mobileMenu.querySelectorAll('[data-close-menu]').forEach(function (b) {
+      b.addEventListener('click', function () { toggleMenu(true); });
     });
   }
 
@@ -240,8 +241,8 @@
   }
   if (window.Lenis && !isTouch) {
     const lenis = new Lenis({
-      lerp: 0.12,
-      wheelMultiplier: 1.2,
+      lerp: 0.18,
+      wheelMultiplier: 1.0,
       touchMultiplier: 1.2,
       smoothWheel: true
     });
@@ -262,6 +263,18 @@
     e.preventDefault();
     scrollToId(id);
   });
+
+  /* ================= WHATSAPP PRE-FILL ================= */
+  // Any wa.me button carries a pre-filled template with a {Nama} placeholder.
+  // If the user has typed a name in the contact form, fill it in dynamically;
+  // otherwise keep the literal {Nama} so they can edit it inside WhatsApp.
+  document.addEventListener('click', function (e) {
+    const a = e.target.closest('a[href^="https://wa.me/"]');
+    if (!a || !a.href || a.href.indexOf('{Nama}') === -1) return;
+    const nameInput = document.getElementById('ctName');
+    const name = (nameInput && nameInput.value.trim()) || '{Nama}';
+    a.href = a.href.replace(/%7BNama%7D/, encodeURIComponent(name));
+  }, true);
 
   /* ================= RIPPLE EFFECT ================= */
   document.addEventListener('click', function (e) {
@@ -346,15 +359,12 @@
   function buildGallery() {
     if (!masonry) return;
     masonry.innerHTML = '';
-    const heights = [1.2, 0.8, 1.0, 1.4, 0.9, 1.1, 1.3, 0.85];
     galleryItems.forEach(function (item, i) {
       const el = document.createElement('div');
       el.className = 'g-item';
       el.setAttribute('data-filt', item.cat);
-      const h = heights[i % heights.length];
-      el.style.height = (220 * h) + 'px';
       el.innerHTML =
-        '<img src="' + item.img + '" alt="' + item.label + '" loading="lazy" style="height:100%;object-fit:cover" />' +
+        '<img src="' + item.img + '" alt="' + item.label + '" loading="lazy" />' +
         '<span class="g-tag">' + item.cat.toUpperCase() + '</span>' +
         '<div class="g-light"></div>' +
         '<div class="g-overlay"><p>' + item.label + '</p></div>';
@@ -363,6 +373,55 @@
     });
   }
   buildGallery();
+
+  /* ================= GALLERY CAROUSEL (1 baris, tengah jelas & besar) ================= */
+  const galleryItemsAll = Array.prototype.slice.call(masonry ? masonry.children : []);
+  let galIndex = 0;
+  function galVisible() {
+    return galleryItemsAll.filter(function (it) { return !it.classList.contains('hide'); });
+  }
+  function positionGallery(animate) {
+    const vis = galVisible();
+    const total = vis.length;
+    if (!total) return;
+    if (galIndex > total - 1) galIndex = total - 1;
+    if (galIndex < 0) galIndex = 0;
+    if (masonry) masonry.classList.toggle('no-anim', !animate);
+    vis.forEach(function (it, idx) {
+      it.classList.remove('center', 'side', 'far');
+      let diff = idx - galIndex;
+      // wrap around carousel smooth
+      if (diff > total / 2) diff -= total;
+      if (diff < -total / 2) diff += total;
+      const abs = Math.abs(diff);
+      if (abs === 0) it.classList.add('center');
+      else if (abs === 1) it.classList.add('side');
+      else it.classList.add('far');
+      it.style.setProperty('--pos', diff);
+    });
+    // reflow lalu aktifkan transisi supaya langkah berjalan halus
+    if (masonry) {
+      void masonry.offsetWidth;
+      masonry.classList.remove('no-anim');
+    }
+  }
+  function galGo(dir) {
+    const vis = galVisible();
+    const total = vis.length;
+    if (!total) return;
+    galIndex = (galIndex + dir + total) % total;
+    positionGallery(true);
+  }
+  const galPrev = document.getElementById('galPrev');
+  const galNext = document.getElementById('galNext');
+  if (galPrev) galPrev.addEventListener('click', function () { galGo(-1); });
+  if (galNext) galNext.addEventListener('click', function () { galGo(1); });
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'ArrowLeft') galGo(-1);
+    if (e.key === 'ArrowRight') galGo(1);
+  });
+  // posisi awal: item tengah pertama jelas
+  positionGallery(false);
 
   /* ================= GALLERY FILTER ================= */
   const galleryFilter = document.getElementById('galleryFilter');
@@ -376,6 +435,8 @@
           const show = f === 'all' || it.getAttribute('data-filt') === f;
           it.classList.toggle('hide', !show);
         });
+        if (galIndex > galVisible().length - 1) galIndex = 0;
+        positionGallery(false);
       });
     });
   }
@@ -407,12 +468,28 @@
 
   function openModal(m) { if (m) m.classList.add('open'); }
   function closeModal(m) { if (m) m.classList.remove('open'); }
-  function closeAllModals() { closeModal(orderModal); closeModal(detailModal); closeLightbox(); }
+  function closeAllModals() { closeModal(orderModal); closeModal(detailModal); closeModal(pickerOverlay); closeLightbox(); }
 
   window.openOrderModal = function () { closeModal(detailModal); openModal(orderModal); };
   window.closeOrderModal = function () { closeModal(orderModal); };
   window.openDetail = function () { openModal(detailModal); };
   window.closeDetail = function () { closeModal(detailModal); };
+
+  // Product Picker overlay: menampilkan 3 kartu produk
+  const pickerOverlay = document.getElementById('productPickerOverlay');
+  function openPicker() { closeModal(detailModal); closeModal(orderModal); openModal(pickerOverlay); }
+  function closePicker() { closeModal(pickerOverlay); }
+  window.openOrderPicker = function () { openPicker(); };
+  window.closeOrderPicker = function () { closePicker(); };
+
+  // data-order-picker buttons (Pesan Sekarang di nav / hero / mobile menu) -> buka overlay produk
+  document.querySelectorAll('[data-order-picker]').forEach(function (btn) {
+    btn.addEventListener('click', function (e) { e.preventDefault(); openPicker(); });
+  });
+  // close picker
+  document.querySelectorAll('[data-close-picker]').forEach(function (el) {
+    el.addEventListener('click', function () { closePicker(); });
+  });
 
   // data-order buttons -> open order modal
   document.querySelectorAll('[data-order]').forEach(function (btn) {

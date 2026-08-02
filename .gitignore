@@ -38,3 +38,10 @@ coverage/
 .env
 .env.local
 .env.*.local
+
+# ---- Dev-only / testing files (NOT part of the production site, keep out of deploy) ----
+demoScrollTest.js
+three-anim.html
+/audit*.js
+_v*.js
+/tmp-*.js

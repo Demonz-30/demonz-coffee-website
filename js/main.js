@@ -240,8 +240,9 @@
   }
   if (window.Lenis && !isTouch) {
     const lenis = new Lenis({
-      duration: 1.2,
-      easing: function (t) { return Math.min(1, 1.001 - Math.pow(2, -10 * t)); },
+      lerp: 0.12,
+      wheelMultiplier: 1.2,
+      touchMultiplier: 1.2,
       smoothWheel: true
     });
     window.__lenis = lenis;

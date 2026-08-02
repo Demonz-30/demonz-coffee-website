@@ -32,6 +32,10 @@
   let reducedMotion = false;
   let currentScale = 1; // per-viewport product scale
   let firstFrameDone = false;
+  // UX: pause auto-rotate while the user drags, then resume after N ms idle.
+  let interacting = false;         // true while an OrbitControls interaction is active
+  let idleTimer = null;            // timer that re-enables auto-rotate after idle
+  const AUTO_IDLE_MS = 3000;       // seconds of no interaction before auto-rotate returns
   // base hover amplitude (scaled down when reduced-motion)
   let bobAmp = 0.12;
   let particles = null;          // ambient dust Points cloud
@@ -203,7 +207,7 @@
     if (THREE.OrbitControls) {
       controls = new THREE.OrbitControls(camera, canvas);
       controls.enableDamping = true;
-      controls.dampingFactor = 0.08;
+      controls.dampingFactor = 0.12; // snappier, less "heavy" response while staying smooth
       controls.enableZoom = true;
       controls.minDistance = 4.2;
       controls.maxDistance = 12;
@@ -212,6 +216,24 @@
       controls.autoRotate = autoRotate;
       controls.autoRotateSpeed = 0.9;
       controls.target.set(0, 0, 0);
+
+      // Pause auto-rotate the moment the user grabs the product, resume after idle.
+      controls.addEventListener('start', function () {
+        interacting = true;
+        if (idleTimer) { clearTimeout(idleTimer); idleTimer = null; }
+        if (controls) controls.autoRotate = false;
+      });
+      controls.addEventListener('end', function () {
+        interacting = false;
+        if (idleTimer) clearTimeout(idleTimer);
+        if (reducedMotion) return; // never force auto-rotate for reduced-motion users
+        idleTimer = setTimeout(function () {
+          idleTimer = null;
+          if (controls && autoRotate && !zoomed && !camTarget) {
+            controls.autoRotate = true;
+          }
+        }, AUTO_IDLE_MS);
+      });
     }
 
     // Ambient dust particles (cheap, single Points draw call, additive glow)
@@ -531,7 +553,8 @@
   // ---- Custom controls (Autorotate / Zoom / Reset) ----
   window.setAutoRotate = function (v) {
     autoRotate = typeof v === 'boolean' ? v : !autoRotate;
-    if (controls) controls.autoRotate = autoRotate;
+    if (idleTimer) { clearTimeout(idleTimer); idleTimer = null; }
+    if (controls) controls.autoRotate = autoRotate && !interacting;
   };
   window.setZoom = function () {
     if (!controls || !camera) return;
@@ -550,7 +573,8 @@
     controls.minDistance = 4.2;
     // don't force auto-rotate back on for users who prefer reduced motion
     autoRotate = reducedMotion ? false : true;
-    controls.autoRotate = autoRotate;
+    if (idleTimer) { clearTimeout(idleTimer); idleTimer = null; }
+    controls.autoRotate = autoRotate && !interacting;
     document.body.setAttribute('data-autorotate', autoRotate ? '1' : '0');
     animateCameraTo(defaultPos.x, defaultPos.y, defaultPos.z);
     if (product) product.rotation.set(0, 0, 0);
@@ -647,8 +671,9 @@
     // under-glow flicker subtle
     if (under) under.intensity = 1.0 + Math.sin(t * 1.4) * 0.15;
 
-    // pointer parallax: nudge the camera target slightly for a cinematic feel
-    if (!reducedMotion && controls && !zoomed && !camTarget) {
+    // pointer parallax: nudge the camera target slightly for a cinematic feel.
+    // Disabled while the user is dragging so it never fights the OrbitControls rotate.
+    if (!reducedMotion && controls && !zoomed && !camTarget && !interacting) {
       controls.target.x = mouseNX * 0.12;
       controls.target.y = -mouseNY * 0.08;
     }
@@ -667,6 +692,7 @@
   function dispose() {
     if (!started) return;
     disposed = true;
+    if (idleTimer) { clearTimeout(idleTimer); idleTimer = null; }
     if (renderer) {
       renderer.dispose();
       renderer.renderLists.dispose && renderer.renderLists.dispose();

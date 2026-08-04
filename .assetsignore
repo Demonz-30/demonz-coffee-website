@@ -1,0 +1,7 @@
+node_modules
+.git
+build
+*.map
+package.json
+package-lock.json
+npm-debug.log
